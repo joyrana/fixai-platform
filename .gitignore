@@ -1,6 +1,7 @@
 target/
 .idea/
 *.iml
+backend/fix-gateway/var/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

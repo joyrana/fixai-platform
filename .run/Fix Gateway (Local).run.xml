@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Fix Gateway (Local)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.fixai.platform.fixgateway.FixGatewayApplication" />
+    <module name="fix-gateway" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=local" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/fix-gateway" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
