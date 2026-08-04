@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: fix-gateway
+
+fix:
+  gateway:
+    sender-comp-id: FIXAI
+    target-comp-id: BROKER
+    begin-string: FIX.4.4
+    host: localhost
+    port: 9876
+    heartbeat-interval: 30
+    reconnect-interval: 5
+    store-path: ${user.dir}/var/fix/store
+    log-path: ${user.dir}/var/fix/log
+    dictionary-path: ${user.dir}/src/main/resources/fix/FIX44.xml
+    reset-on-logon: true
+    reset-on-logout: false
+    reset-on-disconnect: true
+    validate-incoming-messages: true
