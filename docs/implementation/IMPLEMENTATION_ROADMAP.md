@@ -8,8 +8,8 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 | M1 | Build consistency, CI, developer setup, logging redaction fix | M0 | done |
 | M2 | `fix-core` library and deterministic FIX simulator | M1 | done |
 | M3 | Deterministic certification engine (scenarios, runner, evidence, replay, report) | M2 | done |
-| M4 | Broker persistence and FIX session configuration | M1 | planned |
-| M5 | Workflow service: approvals and hash-chained audit | M1 | planned |
+| M4 | Broker persistence and FIX session configuration | M1 | done |
+| M5 | Workflow service: approvals and hash-chained audit | M1 | done |
 | M6 | Python AI foundations: shared contracts, telemetry, evaluation harness | M3 | planned |
 | M7 | Agent orchestrator (LangGraph) | M6 | planned |
 | M8 | Specialised agents, one at a time (FIX, certification, log-analysis, knowledge, report, human-review) | M7 | planned |

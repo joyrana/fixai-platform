@@ -53,6 +53,9 @@ class CertificationApiIntegrationTest {
     @Autowired
     TestRestTemplate rest;
 
+    @Autowired
+    org.springframework.jdbc.core.JdbcTemplate jdbc;
+
     @Test
     void listsCatalogueAndValidatesTestPlans() {
         List<Map<String, Object>> scenarios = rest.exchange("/api/v1/scenarios?fixVersion=FIX44", HttpMethod.GET, null, LIST).getBody();
@@ -162,6 +165,41 @@ class CertificationApiIntegrationTest {
         ResponseEntity<Map<String, Object>> missing = rest.exchange(
                 "/api/v1/certification-runs/6f1c3c1e-0000-4000-8000-000000000002", HttpMethod.GET, null, MAP);
         assertThat(missing.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void rolesRestrictWhoCanStartRunsAndAgentsAreLimitedToSimulatedTargets() {
+        HttpHeaders auditor = devHeaders("auditor1", "AUDITOR");
+        ResponseEntity<Map<String, Object>> forbidden = rest.exchange("/api/v1/certification-runs", HttpMethod.POST,
+                new HttpEntity<>(Map.of("suiteId", "smoke", "fixVersion", "FIX44"), auditor), MAP);
+        assertThat(forbidden.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+        HttpHeaders agent = devHeaders("certification-agent", "AI_AGENT");
+        ResponseEntity<Map<String, Object>> external = rest.exchange("/api/v1/certification-runs", HttpMethod.POST,
+                new HttpEntity<>(Map.of("suiteId", "smoke", "fixVersion", "FIX44", "target",
+                        Map.of("type", "SESSION_CONFIG", "sessionConfigId", "6f1c3c1e-0000-4000-8000-000000000003")), agent), MAP);
+        assertThat(external.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat((String) external.getBody().get("detail")).contains("AI agents may only start simulated certifications");
+
+        ResponseEntity<Map<String, Object>> simulated = rest.exchange("/api/v1/certification-runs", HttpMethod.POST,
+                new HttpEntity<>(Map.of("scenarioIds", List.of("SES-002"), "fixVersion", "FIX44"), agent), MAP);
+        assertThat(simulated.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(simulated.getBody()).containsEntry("requestedBy", "certification-agent");
+
+        assertThat(rest.exchange("/api/v1/certification-runs/" + simulated.getBody().get("id"), HttpMethod.GET,
+                new HttpEntity<>(auditor), MAP).getStatusCode()).isEqualTo(HttpStatus.OK);
+        Integer outbox = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM certification.audit_outbox WHERE payload->>'resourceId' = ?", Integer.class,
+                simulated.getBody().get("id"));
+        assertThat(outbox).isPositive();
+    }
+
+    private static HttpHeaders devHeaders(String user, String roles) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("X-Dev-User", user);
+        headers.set("X-Dev-Roles", roles);
+        return headers;
     }
 
     private Map<String, Object> awaitTerminal(String runId) throws InterruptedException {

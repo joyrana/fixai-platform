@@ -1,4 +1,4 @@
-package com.fixai.platform.certification.adapter.in.web;
+package com.fixai.platform.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,14 +8,9 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import org.slf4j.MDC;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /** Accepts a well-formed {@code X-Correlation-Id} or generates one; exposes it in MDC and the response. */
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorrelationIdFilter extends OncePerRequestFilter {
 
     public static final String HEADER = "X-Correlation-Id";
@@ -40,5 +35,11 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     public static String current(HttpServletRequest request) {
         Object value = request.getAttribute(MDC_KEY);
         return value == null ? UUID.randomUUID().toString() : value.toString();
+    }
+
+    /** Correlation ID of the current thread's request, for outbound calls. */
+    public static String currentOrNew() {
+        String value = MDC.get(MDC_KEY);
+        return value == null ? UUID.randomUUID().toString() : value;
     }
 }

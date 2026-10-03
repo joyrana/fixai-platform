@@ -30,6 +30,7 @@
 
     <modules>
         <module>../fix-core</module>
+        <module>../platform-web</module>
         <module>../fix-simulator</module>
         <module>../fix-gateway</module>
         <module>../broker-service</module>
@@ -42,6 +43,11 @@
             <dependency>
                 <groupId>com.fixai</groupId>
                 <artifactId>fix-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fixai</groupId>
+                <artifactId>platform-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

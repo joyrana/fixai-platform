@@ -2,6 +2,8 @@ package com.fixai.platform.certification.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fixai.platform.certification.adapter.out.audit.LoggingAuditAdapter;
+import com.fixai.platform.certification.adapter.out.audit.OutboxAuditAdapter;
+import com.fixai.platform.certification.adapter.out.broker.BrokerServiceSessionConfigAdapter;
 import com.fixai.platform.certification.adapter.out.broker.UnconfiguredSessionConfigAdapter;
 import com.fixai.platform.certification.adapter.out.catalogue.ClasspathScenarioCatalogue;
 import com.fixai.platform.certification.adapter.out.fix.QuickFixTransport;
@@ -18,8 +20,11 @@ import com.fixai.platform.certification.application.service.CertificationRunServ
 import com.fixai.platform.certification.application.service.CertificationSettings;
 import com.fixai.platform.fixcore.FixMessageRedactor;
 import com.fixai.platform.simulator.engine.FixSimulator;
+import com.fixai.platform.web.AuditOutbox;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.web.client.RestClient;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,14 +65,18 @@ public class CertificationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AuditPort auditPort() {
-        return new LoggingAuditAdapter();
+    public AuditPort auditPort(ObjectProvider<AuditOutbox> outbox) {
+        AuditOutbox available = outbox.getIfAvailable();
+        return available == null ? new LoggingAuditAdapter() : new OutboxAuditAdapter(available);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SessionConfigPort sessionConfigPort() {
-        return new UnconfiguredSessionConfigAdapter();
+    public SessionConfigPort sessionConfigPort(CertificationProperties properties, RestClient.Builder builder) {
+        String url = properties.brokerServiceUrl();
+        return url == null || url.isBlank()
+                ? new UnconfiguredSessionConfigAdapter()
+                : new BrokerServiceSessionConfigAdapter(builder.baseUrl(url).build());
     }
 
     @Bean

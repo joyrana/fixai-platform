@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: workflow-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:fixai}
+    username: ${POSTGRES_USER:fixai}
+    password: ${POSTGRES_PASSWORD:change-me-local-only}
+    hikari:
+      schema: workflow
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      connection-timeout: 5000
+  flyway:
+    schemas: workflow
+    default-schema: workflow
+    create-schemas: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8084}
+  shutdown: graceful
+  error:
+    include-stacktrace: never
+    include-message: never
+
+fixai:
+  security:
+    enabled: ${FIXAI_SECURITY_ENABLED:false}
+    issuer-uri: ${FIXAI_OIDC_ISSUER_URI:}
+    audience: ${FIXAI_OIDC_AUDIENCE:fixai-platform}
+    cors-allowed-origins: ${FIXAI_CORS_ORIGINS:http://localhost:5173}
+  workflow:
+    expiry-sweep-interval: PT1M
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{correlationId:-}]"

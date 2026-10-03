@@ -1,0 +1,2 @@
+com.fixai.platform.web.PlatformWebAutoConfiguration
+com.fixai.platform.web.PlatformClientsAutoConfiguration

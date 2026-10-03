@@ -18,6 +18,10 @@
     <dependencies>
         <dependency>
             <groupId>com.fixai</groupId>
+            <artifactId>platform-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fixai</groupId>
             <artifactId>fix-core</artifactId>
         </dependency>
         <dependency>

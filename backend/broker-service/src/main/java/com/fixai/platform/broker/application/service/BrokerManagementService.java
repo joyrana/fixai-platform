@@ -1,6 +1,7 @@
 package com.fixai.platform.broker.application.service;
 
 import com.fixai.platform.broker.application.port.inbound.BrokerManagementUseCase;
+import com.fixai.platform.broker.application.port.outbound.AuditPort;
 import com.fixai.platform.broker.application.port.outbound.BrokerRepositoryPort;
 import com.fixai.platform.broker.domain.broker.Broker;
 import com.fixai.platform.broker.domain.broker.BrokerStatus;
@@ -8,15 +9,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class BrokerManagementService implements BrokerManagementUseCase {
 
     private final BrokerRepositoryPort brokerRepositoryPort;
+    private final AuditPort audit;
 
-    public BrokerManagementService(BrokerRepositoryPort brokerRepositoryPort) {
+    public BrokerManagementService(BrokerRepositoryPort brokerRepositoryPort, AuditPort audit) {
         this.brokerRepositoryPort = brokerRepositoryPort;
+        this.audit = audit;
     }
 
     @Override
@@ -35,7 +40,10 @@ public class BrokerManagementService implements BrokerManagementUseCase {
                 command.status(),
                 now,
                 now);
-        return brokerRepositoryPort.save(broker);
+        Broker saved = brokerRepositoryPort.save(broker);
+        audit.record("BROKER_CREATED", "broker", saved.id().toString(), saved.status().name(),
+                Map.of("brokerCode", saved.brokerCode()));
+        return saved;
     }
 
     @Override
@@ -49,7 +57,9 @@ public class BrokerManagementService implements BrokerManagementUseCase {
                 command.status(),
                 existing.createdAt(),
                 Instant.now());
-        return brokerRepositoryPort.save(updated);
+        Broker saved = brokerRepositoryPort.save(updated);
+        audit.record("BROKER_UPDATED", "broker", brokerId.toString(), saved.status().name(), Map.of());
+        return saved;
     }
 
     @Override
@@ -74,12 +84,16 @@ public class BrokerManagementService implements BrokerManagementUseCase {
                 status,
                 existing.createdAt(),
                 Instant.now());
-        return brokerRepositoryPort.save(updated);
+        Broker saved = brokerRepositoryPort.save(updated);
+        audit.record("BROKER_STATUS_CHANGED", "broker", brokerId.toString(), status.name(),
+                Map.of("previousStatus", existing.status().name()));
+        return saved;
     }
 
     @Override
     public void deleteBroker(UUID brokerId) {
         getBroker(brokerId);
         brokerRepositoryPort.deleteById(brokerId);
+        audit.record("BROKER_DELETED", "broker", brokerId.toString(), "DELETED", Map.of());
     }
 }

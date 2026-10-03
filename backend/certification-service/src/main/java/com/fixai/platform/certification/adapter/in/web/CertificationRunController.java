@@ -16,6 +16,8 @@ import com.fixai.platform.certification.application.service.CertificationRunServ
 import com.fixai.platform.certification.application.service.ReportHtmlRenderer;
 import com.fixai.platform.certification.domain.run.CertificationRun;
 import com.fixai.platform.certification.domain.run.ScenarioExecution;
+import com.fixai.platform.web.CorrelationIdFilter;
+import com.fixai.platform.web.CurrentActor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +32,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,10 +52,10 @@ public class CertificationRunController {
     private final CertificationRunService service;
     private final CertificationReportService reports;
     private final RunRepository repository;
-    private final ActorResolver actors;
+    private final CurrentActor actors;
 
     public CertificationRunController(
-            CertificationRunService service, CertificationReportService reports, RunRepository repository, ActorResolver actors) {
+            CertificationRunService service, CertificationReportService reports, RunRepository repository, CurrentActor actors) {
         this.service = service;
         this.reports = reports;
         this.repository = repository;
@@ -60,6 +63,7 @@ public class CertificationRunController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','CERTIFICATION_ENGINEER','AI_AGENT')")
     @Operation(summary = "Start a certification run (asynchronous; returns 202). Supports Idempotency-Key.")
     public ResponseEntity<RunResponse> start(
             @Valid @RequestBody StartRunRequest request,
@@ -71,7 +75,7 @@ public class CertificationRunController {
                 request.target() == null ? null : request.target().simulatorProfile(),
                 request.target() == null ? null : request.target().sessionConfigId());
         CertificationRunService.StartResult result =
-                service.start(command, actors.current(http), CorrelationIdFilter.current(http), idempotencyKey);
+                service.start(command, actors.get(), CorrelationIdFilter.current(http), idempotencyKey);
         RunResponse body = RunResponse.of(result.run());
         return ResponseEntity.status(result.created() ? HttpStatus.ACCEPTED : HttpStatus.OK)
                 .location(URI.create("/api/v1/certification-runs/" + body.id()))
@@ -94,9 +98,10 @@ public class CertificationRunController {
     }
 
     @PostMapping("/{runId}/cancel")
+    @PreAuthorize("hasAnyRole('ADMIN','CERTIFICATION_ENGINEER')")
     @Operation(summary = "Request cancellation; running scenarios stop at the next step boundary")
     public RunResponse cancel(@PathVariable UUID runId, HttpServletRequest http) {
-        return RunResponse.of(service.cancel(runId, actors.current(http), CorrelationIdFilter.current(http)));
+        return RunResponse.of(service.cancel(runId, actors.get(), CorrelationIdFilter.current(http)));
     }
 
     @GetMapping("/{runId}/scenarios")
@@ -134,7 +139,7 @@ public class CertificationRunController {
     @PostMapping("/{runId}/replay-verification")
     @Operation(summary = "Re-evaluate every verdict offline from persisted evidence and verify the evidence digest")
     public CertificationRunService.ReplayReport replay(@PathVariable UUID runId, HttpServletRequest http) {
-        return service.replay(runId, actors.current(http), CorrelationIdFilter.current(http));
+        return service.replay(runId, actors.get(), CorrelationIdFilter.current(http));
     }
 
     @GetMapping("/{runId}/report")

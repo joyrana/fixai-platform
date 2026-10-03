@@ -62,3 +62,16 @@ logging:
   level:
     quickfix: WARN
     org.apache.mina: WARN
+---
+fixai:
+  security:
+    enabled: ${FIXAI_SECURITY_ENABLED:false}
+    issuer-uri: ${FIXAI_OIDC_ISSUER_URI:}
+    audience: ${FIXAI_OIDC_AUDIENCE:fixai-platform}
+    cors-allowed-origins: ${FIXAI_CORS_ORIGINS:http://localhost:5173}
+    client:
+      token-uri: ${FIXAI_OIDC_TOKEN_URI:}
+      client-id: ${FIXAI_CLIENT_ID:certification-service}
+      client-secret: ${FIXAI_CLIENT_SECRET:}
+  audit:
+    workflow-url: ${WORKFLOW_SERVICE_URL:http://localhost:8084}

@@ -27,11 +27,14 @@ class BrokerManagementServiceTest {
     @Mock
     private BrokerRepositoryPort brokerRepositoryPort;
 
+    @Mock
+    private com.fixai.platform.broker.application.port.outbound.AuditPort auditPort;
+
     private BrokerManagementService service;
 
     @BeforeEach
     void setUp() {
-        service = new BrokerManagementService(brokerRepositoryPort);
+        service = new BrokerManagementService(brokerRepositoryPort, auditPort);
     }
 
     @Test

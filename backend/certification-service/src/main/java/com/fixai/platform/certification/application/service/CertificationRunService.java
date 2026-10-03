@@ -80,7 +80,13 @@ public class CertificationRunService {
     public record StartResult(CertificationRun run, boolean created) {
     }
 
-    public StartResult start(StartRunCommand command, String actor, String correlationId, String idempotencyKey) {
+    public StartResult start(StartRunCommand command, com.fixai.platform.web.Actor caller, String correlationId,
+                             String idempotencyKey) {
+        String actor = caller.id();
+        if (caller.type() == com.fixai.platform.web.Actor.Type.AGENT && command.targetType() == RunTarget.Type.SESSION_CONFIG) {
+            throw new CertificationExceptions.TargetNotAllowed(
+                    "AI agents may only start simulated certifications; external targets require a human operator");
+        }
         String requestHash = FixMessageRedactor.sha256(command.canonical());
         if (idempotencyKey != null) {
             Optional<CertificationRun> existing = runs.findByIdempotencyKey(idempotencyKey);
@@ -142,7 +148,8 @@ public class CertificationRunService {
         return runs.scenarioExecutions(runId);
     }
 
-    public CertificationRun cancel(UUID runId, String actor, String correlationId) {
+    public CertificationRun cancel(UUID runId, com.fixai.platform.web.Actor caller, String correlationId) {
+        String actor = caller.id();
         CertificationRun run = get(runId);
         if (run.status().isTerminal()) {
             throw new CertificationExceptions.InvalidState("Run is already " + run.status());
@@ -157,7 +164,8 @@ public class CertificationRunService {
     }
 
     /** Re-evaluates every scenario of a finished run from persisted evidence. */
-    public ReplayReport replay(UUID runId, String actor, String correlationId) {
+    public ReplayReport replay(UUID runId, com.fixai.platform.web.Actor caller, String correlationId) {
+        String actor = caller.id();
         CertificationRun run = get(runId);
         if (!run.status().isTerminal()) {
             throw new CertificationExceptions.InvalidState("Run is still " + run.status());
