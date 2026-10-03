@@ -1,4 +1,50 @@
+# Local development stack.
+#
+#   docker compose -f infra/docker/docker-compose.yml up -d                      # Postgres only (run services from the IDE)
+#   mvn -B package -DskipTests && \
+#   docker compose -f infra/docker/docker-compose.yml --profile platform up -d --build   # everything, UI on :3000
+#
+# LOCAL ONLY: security is disabled and callers identify themselves with X-Dev-User/X-Dev-Roles headers. Every port
+# is bound to 127.0.0.1. Shared environments must set FIXAI_SECURITY_ENABLED=true with an OIDC issuer (see .env.example).
+# The FIX "counterparty" is the synthetic simulator; nothing here connects to a real broker or venue.
 name: fixai
+
+x-java-env: &java-env
+  POSTGRES_HOST: postgres
+  POSTGRES_DB: ${POSTGRES_DB:-fixai}
+  POSTGRES_USER: ${POSTGRES_USER:-fixai}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+  FIXAI_SECURITY_ENABLED: "false"
+  # Browsers send Origin on same-origin POSTs; the UI gateway's origin must be allow-listed.
+  FIXAI_CORS_ORIGINS: http://localhost:${UI_PORT:-3000},http://127.0.0.1:${UI_PORT:-3000},http://localhost:5173
+  WORKFLOW_SERVICE_URL: http://workflow-service:8080
+  BROKER_SERVICE_URL: http://broker-service:8080
+  OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+
+x-python-env: &python-env
+  FIXAI_SECURITY_ENABLED: "false"
+  FIXAI_LLM_PROVIDER: ${FIXAI_LLM_PROVIDER:-offline}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  CERTIFICATION_SERVICE_URL: http://certification-service:8080
+  BROKER_SERVICE_URL: http://broker-service:8080
+  WORKFLOW_SERVICE_URL: http://workflow-service:8080
+  FIX_SIMULATOR_ADMIN_URL: http://fix-simulator:8080
+  CERTIFICATION_MCP_URL: http://certification-mcp:8201/mcp
+  FIX_MCP_URL: http://fix-mcp:8202/mcp
+  KNOWLEDGE_MCP_URL: http://knowledge-mcp:8203/mcp
+  OPERATIONS_MCP_URL: http://operations-mcp:8204/mcp
+
+x-python-image: &python-image
+  image: fixai/python:local
+  build:
+    context: ../..
+    dockerfile: infra/docker/python.Dockerfile
+
+x-python-health: &python-health
+  interval: 10s
+  timeout: 3s
+  retries: 12
+  start_period: 20s
 
 services:
   postgres:
@@ -8,7 +54,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-fixai}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
       - postgres-data:/var/lib/postgresql/data
@@ -18,5 +64,133 @@ services:
       timeout: 3s
       retries: 20
 
+  fix-simulator:
+    profiles: [platform]
+    image: fixai/fix-simulator:local
+    build:
+      context: ../../backend/fix-simulator/target
+      dockerfile: ../../../infra/docker/java-service.Dockerfile
+      args:
+        JAR_FILE: fix-simulator-0.0.1-SNAPSHOT-exec.jar
+    environment:
+      FIX_SIMULATOR_PORT: "9880"
+    ports:
+      - "127.0.0.1:8085:8080"
+
+  workflow-service:
+    profiles: [platform]
+    image: fixai/workflow-service:local
+    build:
+      context: ../../backend/workflow-service/target
+      dockerfile: ../../../infra/docker/java-service.Dockerfile
+      args:
+        JAR_FILE: workflow-service-0.0.1-SNAPSHOT.jar
+    environment: *java-env
+    depends_on:
+      postgres: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:8084:8080"
+
+  broker-service:
+    profiles: [platform]
+    image: fixai/broker-service:local
+    build:
+      context: ../../backend/broker-service/target
+      dockerfile: ../../../infra/docker/java-service.Dockerfile
+      args:
+        JAR_FILE: broker-service-0.0.1-SNAPSHOT.jar
+    environment: *java-env
+    depends_on:
+      postgres: { condition: service_healthy }
+      workflow-service: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:8081:8080"
+
+  certification-service:
+    profiles: [platform]
+    image: fixai/certification-service:local
+    build:
+      context: ../../backend/certification-service/target
+      dockerfile: ../../../infra/docker/java-service.Dockerfile
+      args:
+        JAR_FILE: certification-service-0.0.1-SNAPSHOT.jar
+    environment:
+      <<: *java-env
+      FIX_SIMULATOR_HOST: fix-simulator
+      FIX_SIMULATOR_PORT: "9880"
+      FIX_SIMULATOR_EMBEDDED: "false"
+    depends_on:
+      postgres: { condition: service_healthy }
+      workflow-service: { condition: service_healthy }
+      broker-service: { condition: service_healthy }
+      fix-simulator: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:8083:8080"
+
+  certification-mcp:
+    profiles: [platform]
+    <<: *python-image
+    command: ["fixai-certification-mcp"]
+    environment: { <<: *python-env, MCP_PORT: "8201" }
+    healthcheck: { <<: *python-health, test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8201/health/ready')"] }
+    depends_on:
+      certification-service: { condition: service_healthy }
+
+  fix-mcp:
+    profiles: [platform]
+    <<: *python-image
+    command: ["fixai-fix-mcp"]
+    environment: { <<: *python-env, MCP_PORT: "8202" }
+    healthcheck: { <<: *python-health, test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8202/health/ready')"] }
+    depends_on:
+      certification-service: { condition: service_healthy }
+
+  knowledge-mcp:
+    profiles: [platform]
+    <<: *python-image
+    command: ["fixai-knowledge-mcp"]
+    environment: { <<: *python-env, MCP_PORT: "8203" }
+    healthcheck: { <<: *python-health, test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8203/health/ready')"] }
+
+  operations-mcp:
+    profiles: [platform]
+    <<: *python-image
+    command: ["fixai-operations-mcp"]
+    environment: { <<: *python-env, MCP_PORT: "8204" }
+    healthcheck: { <<: *python-health, test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8204/health/ready')"] }
+    depends_on:
+      workflow-service: { condition: service_healthy }
+
+  agent-orchestrator:
+    profiles: [platform]
+    <<: *python-image
+    command: ["fixai-agent-orchestrator"]
+    environment:
+      <<: *python-env
+      PORT: "8100"
+      FIXAI_CHECKPOINT_PATH: /data/checkpoints.sqlite
+    volumes:
+      - orchestrator-data:/data
+    healthcheck: { <<: *python-health, test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health/ready')"] }
+    depends_on:
+      certification-mcp: { condition: service_healthy }
+      fix-mcp: { condition: service_healthy }
+      knowledge-mcp: { condition: service_healthy }
+      operations-mcp: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:8100:8100"
+
+  frontend:
+    profiles: [platform]
+    image: fixai/frontend:local
+    build:
+      context: ../../frontend
+    depends_on:
+      certification-service: { condition: service_healthy }
+      agent-orchestrator: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:${UI_PORT:-3000}:8080"
+
 volumes:
   postgres-data:
+  orchestrator-data:

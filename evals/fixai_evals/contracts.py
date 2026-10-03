@@ -24,7 +24,6 @@ OUT = Path(__file__).resolve().parents[2] / "docs" / "architecture" / "contracts
 async def documents() -> dict[str, dict[str, Any]]:
     from fixai_certification_mcp import server as certification
     from fixai_fix_mcp import server as fix
-    from fixai_knowledge_agent.agent import SPEC as knowledge_agent
     from fixai_knowledge_mcp import server as knowledge
     from fixai_operations_mcp import server as operations
     from fixai_orchestrator.agents import specs
@@ -33,7 +32,7 @@ async def documents() -> dict[str, dict[str, Any]]:
     for module in (certification, fix, knowledge, operations):
         doc = await contract(module.server, module.registry)
         docs[f"mcp-{doc['server']}.json"] = {"version": module.VERSION, **doc}
-    for spec in [*specs().values(), knowledge_agent]:
+    for spec in specs().values():
         docs[f"agent-{spec.name}.json"] = {
             "agent": spec.name, "version": spec.version, "promptVersion": spec.prompt_version,
             "allowedTools": sorted(spec.allowlist), "maxToolCalls": spec.max_tool_calls,

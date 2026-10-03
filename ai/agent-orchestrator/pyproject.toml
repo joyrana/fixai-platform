@@ -7,6 +7,7 @@ dependencies = [
     "fixai-common",
     "fixai-fix-agent",
     "fixai-certification-agent",
+    "fixai-knowledge-agent",
     "fixai-log-analysis-agent",
     "fixai-report-agent",
     "fixai-human-review-agent",
@@ -21,6 +22,7 @@ fixai-agent-orchestrator = "fixai_orchestrator.app:main"
 fixai-common = { workspace = true }
 fixai-fix-agent = { workspace = true }
 fixai-certification-agent = { workspace = true }
+fixai-knowledge-agent = { workspace = true }
 fixai-log-analysis-agent = { workspace = true }
 fixai-report-agent = { workspace = true }
 fixai-human-review-agent = { workspace = true }

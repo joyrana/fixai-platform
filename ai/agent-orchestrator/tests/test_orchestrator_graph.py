@@ -109,3 +109,29 @@ async def test_api_enforces_roles_and_reports_workflows():
             assert conflict.status_code == 409
             missing = await client.get("/v1/workflows/does-not-exist", headers={"X-Dev-Roles": "ADMIN"})
             assert missing.status_code == 404
+
+
+async def test_assist_endpoints_check_roles_and_never_allow_incident_drafts():
+    platform = Platform()
+    calls = []
+
+    async def agents(agent, payload):
+        calls.append((agent, payload))
+        return {"output": {"ok": True}, "metadata": META}
+
+    service = WorkflowService(platform.agents, platform.tools, InMemorySaver(), nosleep)
+    app = create_orchestrator_app(service=service, agents=agents)
+    run = {"run_id": RUN, "execution_id": RUN}
+    async with app.router.lifespan_context(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            engineer = {"X-Dev-User": "e", "X-Dev-Roles": "CERTIFICATION_ENGINEER"}
+            assert (await client.post("/v1/assist/logs", json=run, headers=engineer)).status_code == 200
+            assert calls[-1] == ("log-analysis-agent", run | {"create_incident": False})
+            assert (await client.post("/v1/assist/diagnose", json={"run_id": RUN}, headers=engineer)).status_code == 200
+            manager = {"X-Dev-User": "m", "X-Dev-Roles": "BROKER_MANAGER"}
+            assert (await client.post("/v1/assist/diagnose", json={"run_id": RUN}, headers=manager)).status_code == 403
+            assert (await client.post("/v1/assist/ask", json={"question": "How is a gap detected?"},
+                                      headers=manager)).status_code == 200
+            assert (await client.post("/v1/assist/diagnose", json={"run_id": "x"}, headers=engineer)).status_code == 422
+            assert (await client.get("/v1/workflows", headers=engineer)).json() == []

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import uuid
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from typing import Any
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -29,12 +30,18 @@ class WorkflowService:
         self._cancelled: set[str] = set()
         self.graph = build_graph(agents, tools, sleep, self._cancelled.__contains__).compile(checkpointer=checkpointer)
         self._tasks: dict[str, asyncio.Task[Any]] = {}
+        self._index: dict[str, dict[str, Any]] = {}
+        """Workflows started by this process (listing); state itself lives in the checkpointer."""
 
     def _config(self, workflow_id: str, request: WorkflowRequest) -> dict[str, Any]:
         return {"configurable": {"thread_id": workflow_id}, "recursion_limit": recursion_limit(request)}
 
     async def start(self, request: WorkflowRequest, requested_by: str, wait: bool = False) -> str:
         workflow_id = str(uuid.uuid4())
+        self._index[workflow_id] = {"workflow_id": workflow_id, "requested_by": requested_by,
+                                    "objective": request.objective, "fix_version": request.fix_version,
+                                    "external": request.external_certification is not None,
+                                    "created_at": datetime.now(UTC).isoformat()}
         state = {"workflow_id": workflow_id, "requested_by": requested_by, "request": request.model_dump(mode="json"),
                  "cancel_requested": False, "outcome": None, "events": [f"workflow started by {requested_by}"],
                  "agent_runs": []}
@@ -67,6 +74,13 @@ class WorkflowService:
                  else "WAITING_FOR_HUMAN" if interrupts else "DONE" if not snapshot.next else "PAUSED")
         return {"workflow_id": workflow_id, "phase": phase, "next": list(snapshot.next), "interrupts": interrupts,
                 "error": error, **values}
+
+    async def list(self, limit: int = 50) -> list[dict[str, Any]]:
+        rows = []
+        for entry in sorted(self._index.values(), key=lambda e: e["created_at"], reverse=True)[:limit]:
+            state = await self.get(entry["workflow_id"])
+            rows.append(entry | {"phase": state["phase"], "outcome": state.get("outcome"), "run_id": state.get("run_id")})
+        return rows
 
     async def resume(self, workflow_id: str, wait: bool = False) -> None:
         """Re-checks the approval after a reviewer has acted. Resuming never approves anything."""

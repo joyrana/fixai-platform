@@ -41,4 +41,5 @@ known-first-party = ["fixai_*"]
 [tool.ruff.lint.per-file-ignores]
 # Test fixtures and labelled dataset tables read best as one record per line.
 "**/tests/**" = ["E501"]
+"e2e/**" = ["E501"]
 "evals/fixai_evals/datasets_build.py" = ["E501"]

@@ -31,10 +31,11 @@ def specs() -> dict[str, AgentSpec[Any, Any]]:
     from fixai_certification_agent.agent import SPEC as certification
     from fixai_fix_agent.agent import SPEC as fix
     from fixai_human_review_agent.agent import SPEC as review
+    from fixai_knowledge_agent.agent import SPEC as knowledge
     from fixai_log_analysis_agent.agent import SPEC as logs
     from fixai_report_agent.agent import SPEC as report
 
-    return {s.name: s for s in (certification, fix, review, logs, report)}
+    return {s.name: s for s in (certification, fix, review, knowledge, logs, report)}
 
 
 def in_process_agents(servers: dict[str, MCPServer | str] | None = None,
