@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: certification-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:fixai}
+    username: ${POSTGRES_USER:fixai}
+    password: ${POSTGRES_PASSWORD:change-me-local-only}
+    hikari:
+      schema: certification
+      maximum-pool-size: ${DB_POOL_SIZE:16}
+      connection-timeout: 5000
+  flyway:
+    schemas: certification
+    default-schema: certification
+    create-schemas: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  threads:
+    virtual:
+      enabled: false
+
+server:
+  port: ${SERVER_PORT:8083}
+  shutdown: graceful
+  error:
+    include-stacktrace: never
+    include-message: never
+
+fixai:
+  certification:
+    simulator:
+      host: ${FIX_SIMULATOR_HOST:localhost}
+      port: ${FIX_SIMULATOR_PORT:9880}
+      embedded: ${FIX_SIMULATOR_EMBEDDED:false}
+    max-concurrent-runs: 4
+    run-queue-capacity: 50
+    max-parallel-scenarios: 6
+    scenario-timeout: 60s
+    default-heartbeat-seconds: 30
+    reconnect-interval-seconds: 1
+    broker-service-url: ${BROKER_SERVICE_URL:}
+    workflow-service-url: ${WORKFLOW_SERVICE_URL:}
+    engine-version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  observations:
+    key-values:
+      application: certification-service
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{correlationId:-}]"
+  level:
+    quickfix: WARN
+    org.apache.mina: WARN
+---
+fixai:
+  security:
+    enabled: ${FIXAI_SECURITY_ENABLED:false}
+    issuer-uri: ${FIXAI_OIDC_ISSUER_URI:}
+    audience: ${FIXAI_OIDC_AUDIENCE:fixai-platform}
+    cors-allowed-origins: ${FIXAI_CORS_ORIGINS:http://localhost:5173}
+    client:
+      token-uri: ${FIXAI_OIDC_TOKEN_URI:}
+      client-id: ${FIXAI_CLIENT_ID:certification-service}
+      client-secret: ${FIXAI_CLIENT_SECRET:}
+  audit:
+    workflow-url: ${WORKFLOW_SERVICE_URL:http://localhost:8084}

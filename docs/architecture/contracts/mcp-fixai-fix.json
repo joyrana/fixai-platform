@@ -1,0 +1,587 @@
+{
+  "server": "fixai-fix",
+  "tools": [
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Validate and decode one FIX message with the platform dictionaries (structure, BodyLength, CheckSum, required fields, enums, formats). Use before interpreting any message. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "expected_version": {
+            "anyOf": [
+              {
+                "enum": [
+                  "FIX42",
+                  "FIX44",
+                  "FIX50SP2"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expected Version"
+          },
+          "raw": {
+            "maxLength": 65536,
+            "minLength": 1,
+            "title": "Raw",
+            "type": "string"
+          }
+        },
+        "required": [
+          "raw"
+        ],
+        "title": "inspect_messageArguments",
+        "type": "object"
+      },
+      "name": "inspect_message",
+      "outputSchema": {
+        "$defs": {
+          "Field_": {
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "section": {
+                "title": "Section",
+                "type": "string"
+              },
+              "tag": {
+                "title": "Tag",
+                "type": "integer"
+              },
+              "value": {
+                "title": "Value",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tag",
+              "name",
+              "value",
+              "section"
+            ],
+            "title": "Field_",
+            "type": "object"
+          },
+          "Issue": {
+            "properties": {
+              "code": {
+                "title": "Code",
+                "type": "string"
+              },
+              "detail": {
+                "title": "Detail",
+                "type": "string"
+              },
+              "tag": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Tag"
+              }
+            },
+            "required": [
+              "code",
+              "tag",
+              "detail"
+            ],
+            "title": "Issue",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "fields": {
+            "items": {
+              "$ref": "#/$defs/Field_"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "fix_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fix Version"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/$defs/Issue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "msg_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Msg Type"
+          },
+          "raw_redacted": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Redacted"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid",
+          "fix_version",
+          "msg_type",
+          "issues",
+          "fields",
+          "raw_redacted"
+        ],
+        "title": "Inspection",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Inspect a FIX session configuration (no credentials). [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "session_config_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Session Config Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_config_id"
+        ],
+        "title": "inspect_sessionArguments",
+        "type": "object"
+      },
+      "name": "inspect_session",
+      "outputSchema": {
+        "properties": {
+          "begin_string": {
+            "title": "Begin String",
+            "type": "string"
+          },
+          "credential_scheme": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Secret-store scheme only; paths and secrets are never returned",
+            "title": "Credential Scheme"
+          },
+          "environment": {
+            "title": "Environment",
+            "type": "string"
+          },
+          "fix_version": {
+            "title": "Fix Version",
+            "type": "string"
+          },
+          "heartbeat_interval_seconds": {
+            "title": "Heartbeat Interval Seconds",
+            "type": "integer"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "port": {
+            "title": "Port",
+            "type": "integer"
+          },
+          "reset_on_logon": {
+            "title": "Reset On Logon",
+            "type": "boolean"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "sender_comp_id": {
+            "title": "Sender Comp Id",
+            "type": "string"
+          },
+          "session_config_id": {
+            "title": "Session Config Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_comp_id": {
+            "title": "Target Comp Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_config_id",
+          "name",
+          "status",
+          "environment",
+          "fix_version",
+          "begin_string",
+          "role",
+          "sender_comp_id",
+          "target_comp_id",
+          "host",
+          "port",
+          "heartbeat_interval_seconds",
+          "reset_on_logon",
+          "credential_scheme"
+        ],
+        "title": "SessionView",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Re-evaluate a finished run offline from persisted evidence and verify its evidence digest. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=60s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "run_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ],
+        "title": "replay_test_fixtureArguments",
+        "type": "object"
+      },
+      "name": "replay_test_fixture",
+      "outputSchema": {
+        "properties": {
+          "consistent": {
+            "title": "Consistent",
+            "type": "boolean"
+          },
+          "evidence_digest_matches": {
+            "title": "Evidence Digest Matches",
+            "type": "boolean"
+          },
+          "mismatches": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Mismatches",
+            "type": "array"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "consistent",
+          "evidence_digest_matches",
+          "mismatches"
+        ],
+        "title": "ReplayResult",
+        "type": "object"
+      },
+      "ratePerMinute": 10,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 60
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Session-layer timeline of a scenario execution: QuickFIX/J session events plus Logon, Heartbeat, TestRequest, ResendRequest, Reject, SequenceReset and Logout messages (redacted). [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "execution_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "include_application_messages": {
+            "default": false,
+            "title": "Include Application Messages",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "maximum": 500,
+            "minimum": 1,
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "execution_id"
+        ],
+        "title": "retrieve_session_eventsArguments",
+        "type": "object"
+      },
+      "name": "retrieve_session_events",
+      "outputSchema": {
+        "$defs": {
+          "SessionEvent": {
+            "properties": {
+              "direction": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Direction"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "msg_seq_num": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Msg Seq Num"
+              },
+              "msg_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Msg Type"
+              },
+              "ordinal": {
+                "title": "Ordinal",
+                "type": "integer"
+              },
+              "ref": {
+                "title": "Ref",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "ordinal",
+              "kind",
+              "direction",
+              "msg_type",
+              "msg_seq_num",
+              "text"
+            ],
+            "title": "SessionEvent",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/$defs/SessionEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "execution_id": {
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "truncated": {
+            "title": "Truncated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "run_id",
+          "execution_id",
+          "events",
+          "truncated"
+        ],
+        "title": "SessionEvents",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Validate a stored FIX session configuration against protocol and platform rules. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "session_config_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Session Config Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_config_id"
+        ],
+        "title": "validate_fix_configurationArguments",
+        "type": "object"
+      },
+      "name": "validate_fix_configuration",
+      "outputSchema": {
+        "$defs": {
+          "Violation": {
+            "properties": {
+              "code": {
+                "title": "Code",
+                "type": "string"
+              },
+              "field": {
+                "title": "Field",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              }
+            },
+            "required": [
+              "field",
+              "code",
+              "message"
+            ],
+            "title": "Violation",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "session_config_id": {
+            "title": "Session Config Id",
+            "type": "string"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "violations": {
+            "items": {
+              "$ref": "#/$defs/Violation"
+            },
+            "title": "Violations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_config_id",
+          "valid",
+          "violations"
+        ],
+        "title": "ConfigValidation",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    }
+  ],
+  "version": "1.0.0"
+}

@@ -1,0 +1,13 @@
+id: SES-007
+version: 1
+title: Logon with unknown TargetCompID is refused
+description: The counterparty must refuse a Logon addressed to a CompID it does not own.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, logon, security]
+session:
+  targetCompIdSuffix: "-INVALID"
+steps:
+  - logonRejected:
+      description: Logon refused (Logout or disconnect)
+      timeoutMs: 10000

@@ -1,0 +1,46 @@
+id: ORD-004
+version: 1
+title: Resting order cancelled
+description: An OrderCancelRequest for a resting order must produce ExecType=4/OrdStatus=4 echoing OrigClOrdID.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, cancel]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Resting limit order
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        OrdStatus: {equals: "0"}
+  - send:
+      description: Cancel the order
+      msgType: F
+      fields:
+        OrigClOrdID: "${id:o1}"
+        ClOrdID: "${id:c1}"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+  - expect:
+      description: Cancel confirmation
+      msgType: "8"
+      match: {ClOrdID: "${id:c1}"}
+      assert:
+        ExecType: {equals: "4"}
+        OrdStatus: {equals: "4"}
+        OrigClOrdID: {equals: "${id:o1}"}
+        LeavesQty: {numericEquals: "0"}

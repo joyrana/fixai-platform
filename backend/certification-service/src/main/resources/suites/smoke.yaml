@@ -1,0 +1,4 @@
+id: smoke
+title: Smoke
+description: Fast connectivity and order acknowledgement check.
+scenarios: [SES-001, SES-002, ORD-001, ORD-002]

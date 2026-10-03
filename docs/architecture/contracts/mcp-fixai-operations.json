@@ -1,0 +1,484 @@
+{
+  "server": "fixai-operations",
+  "tools": [
+    {
+      "allowedAgents": [
+        "agent-orchestrator",
+        "log-analysis-agent"
+      ],
+      "capability": "SIMULATED_WRITE",
+      "description": "Create an incident DRAFT (never filed externally) referencing evidence. Idempotent per key. [capability=SIMULATED_WRITE roles=ADMIN,AI_AGENT,CERTIFICATION_ENGINEER agents=agent-orchestrator, log-analysis-agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "idempotency_key": {
+            "pattern": "^[A-Za-z0-9._:-]{8,128}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "severity": {
+            "default": "SEV3",
+            "enum": [
+              "SEV1",
+              "SEV2",
+              "SEV3",
+              "SEV4"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 4000,
+            "minLength": 10,
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 5,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "summary",
+          "evidence_refs",
+          "idempotency_key"
+        ],
+        "title": "create_incident_draftArguments",
+        "type": "object"
+      },
+      "name": "create_incident_draft",
+      "outputSchema": {
+        "properties": {
+          "created_by": {
+            "title": "Created By",
+            "type": "string"
+          },
+          "draft_id": {
+            "title": "Draft Id",
+            "type": "string"
+          },
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "status": {
+            "const": "DRAFT",
+            "default": "DRAFT",
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_id",
+          "title",
+          "severity",
+          "summary",
+          "evidence_refs",
+          "created_by"
+        ],
+        "title": "IncidentDraft",
+        "type": "object"
+      },
+      "ratePerMinute": 10,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "CERTIFICATION_ENGINEER"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Status of an approval request. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "approval_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Approval Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_id"
+        ],
+        "title": "get_approval_statusArguments",
+        "type": "object"
+      },
+      "name": "get_approval_status",
+      "outputSchema": {
+        "properties": {
+          "approval_id": {
+            "title": "Approval Id",
+            "type": "string"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "payload_hash": {
+            "title": "Payload Hash",
+            "type": "string"
+          },
+          "risk_level": {
+            "title": "Risk Level",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_id",
+          "status",
+          "payload_hash",
+          "risk_level",
+          "expires_at"
+        ],
+        "title": "ApprovalTicket",
+        "type": "object"
+      },
+      "ratePerMinute": 240,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Health of platform services (actuator readiness). [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {},
+        "title": "inspect_service_healthArguments",
+        "type": "object"
+      },
+      "name": "inspect_service_health",
+      "outputSchema": {
+        "$defs": {
+          "ServiceHealth": {
+            "properties": {
+              "latency_ms": {
+                "title": "Latency Ms",
+                "type": "integer"
+              },
+              "service": {
+                "title": "Service",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "UP",
+                  "DOWN",
+                  "UNREACHABLE"
+                ],
+                "title": "Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "service",
+              "status",
+              "latency_ms"
+            ],
+            "title": "ServiceHealth",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "services": {
+            "items": {
+              "$ref": "#/$defs/ServiceHealth"
+            },
+            "title": "Services",
+            "type": "array"
+          }
+        },
+        "required": [
+          "services"
+        ],
+        "title": "HealthReport",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": [
+        "agent-orchestrator",
+        "human-review-agent"
+      ],
+      "capability": "SIMULATED_WRITE",
+      "description": "File a human approval request in the workflow service (it does not execute anything). The server binds the approval to the exact payload hash. [capability=SIMULATED_WRITE roles=ADMIN,AI_AGENT,CERTIFICATION_ENGINEER agents=agent-orchestrator, human-review-agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "action": {
+            "enum": [
+              "START_EXTERNAL_CERTIFICATION",
+              "APPLY_REMEDIATION",
+              "ACTIVATE_SESSION_CONFIG"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "title": "Arguments",
+            "type": "object"
+          },
+          "environment": {
+            "default": "TEST",
+            "enum": [
+              "SIMULATOR",
+              "TEST",
+              "UAT"
+            ],
+            "title": "Environment",
+            "type": "string"
+          },
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "idempotency_key": {
+            "pattern": "^[A-Za-z0-9._:-]{8,128}$",
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "justification": {
+            "maxLength": 4000,
+            "minLength": 10,
+            "title": "Justification",
+            "type": "string"
+          },
+          "on_behalf_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9._@-]{1,128}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "On Behalf Of"
+          },
+          "target_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_type": {
+            "pattern": "^[a-z0-9-]{2,64}$",
+            "title": "Target Type",
+            "type": "string"
+          },
+          "trace_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Trace Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "action",
+          "target_type",
+          "target_id",
+          "justification",
+          "idempotency_key"
+        ],
+        "title": "request_human_approvalArguments",
+        "type": "object"
+      },
+      "name": "request_human_approval",
+      "outputSchema": {
+        "properties": {
+          "approval_id": {
+            "title": "Approval Id",
+            "type": "string"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "payload_hash": {
+            "title": "Payload Hash",
+            "type": "string"
+          },
+          "risk_level": {
+            "title": "Risk Level",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approval_id",
+          "status",
+          "payload_hash",
+          "risk_level",
+          "expires_at"
+        ],
+        "title": "ApprovalTicket",
+        "type": "object"
+      },
+      "ratePerMinute": 5,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "CERTIFICATION_ENGINEER"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Sanitized session log lines (FIX engine events and session messages) for one scenario execution, with prompt-injection flags. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,CERTIFICATION_ENGINEER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "execution_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "max_lines": {
+            "default": 200,
+            "maximum": 1000,
+            "minimum": 1,
+            "title": "Max Lines",
+            "type": "integer"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f-]{36}$",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "execution_id"
+        ],
+        "title": "retrieve_sanitized_logsArguments",
+        "type": "object"
+      },
+      "name": "retrieve_sanitized_logs",
+      "outputSchema": {
+        "$defs": {
+          "LogLine": {
+            "properties": {
+              "injection_flags": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Injection Flags",
+                "type": "array"
+              },
+              "ref": {
+                "title": "Ref",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "text",
+              "injection_flags"
+            ],
+            "title": "LogLine",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "execution_id": {
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/$defs/LogLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "execution_id",
+          "lines"
+        ],
+        "title": "SanitizedLogs",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "CERTIFICATION_ENGINEER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    }
+  ],
+  "version": "1.0.0"
+}

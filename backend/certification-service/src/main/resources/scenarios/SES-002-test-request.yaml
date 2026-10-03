@@ -1,0 +1,22 @@
+id: SES-002
+version: 1
+title: TestRequest answered with Heartbeat
+description: A TestRequest must be answered by a Heartbeat that echoes TestReqID(112).
+category: SESSION
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, heartbeat]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Send TestRequest
+      msgType: "1"
+      fields:
+        TestReqID: "${id:tr}"
+  - expect:
+      description: Heartbeat echoes TestReqID
+      msgType: "0"
+      match:
+        TestReqID: "${id:tr}"
+      timeoutMs: 5000
+      assert:
+        TestReqID: {equals: "${id:tr}"}

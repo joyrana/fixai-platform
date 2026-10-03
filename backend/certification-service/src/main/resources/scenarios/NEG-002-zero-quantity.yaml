@@ -1,0 +1,29 @@
+id: NEG-002
+version: 1
+title: Order with zero quantity rejected
+description: OrderQty=0 must be rejected (OrdRejReason=13 where the version defines it, otherwise 0) without a fill.
+category: BOUNDARY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, reject, quantity]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Limit order with OrderQty=0
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "0"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Order rejected
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: "8"}
+        OrdStatus: {equals: "8"}
+        OrdRejReason: {equals: {FIX42: "0", default: "13"}}

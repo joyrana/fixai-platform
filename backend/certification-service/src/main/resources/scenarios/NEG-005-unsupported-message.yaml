@@ -1,0 +1,23 @@
+id: NEG-005
+version: 1
+title: Unsupported application message gets BusinessMessageReject
+description: An application message the counterparty does not support must be answered with BusinessMessageReject(j), BusinessRejectReason=3.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [application, reject]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Send QuoteRequest
+      msgType: R
+      fields:
+        QuoteReqID: "${id:q1}"
+        NoRelatedSym:
+          - Symbol: AAPL
+  - expect:
+      description: Business reject
+      msgType: j
+      assert:
+        RefMsgType: {equals: R}
+        BusinessRejectReason: {equals: "3"}
+        RefSeqNum: {present: true}

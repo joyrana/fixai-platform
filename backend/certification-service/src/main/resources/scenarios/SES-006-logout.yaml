@@ -1,0 +1,12 @@
+id: SES-006
+version: 1
+title: Logout handshake
+description: A Logout initiated by the platform must be acknowledged with a Logout.
+category: SESSION
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, logout]
+steps:
+  - logon: {timeoutMs: 10000}
+  - logout:
+      description: Counterparty acknowledges Logout
+      timeoutMs: 5000

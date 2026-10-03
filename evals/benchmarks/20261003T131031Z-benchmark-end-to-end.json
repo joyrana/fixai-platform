@@ -1,0 +1,43 @@
+{
+ "environment": {
+  "code_commit": "b7943fb342b3523a583c3a888d39249c4683d13e-dirty",
+  "cpu_count": 4,
+  "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+  "python": "3.11.15"
+ },
+ "finished_at": "2026-10-03T13:10:31.836495+00:00",
+ "metrics": {
+  "errors": [],
+  "runs_per_minute": 45.98,
+  "seconds_to_report": {
+   "mean": 3.886,
+   "n": 6,
+   "p50": 3.751,
+   "p95": 4.131,
+   "p99": 4.131
+  },
+  "success": {
+   "ci95": [
+    0.6097,
+    1.0
+   ],
+   "n": 6,
+   "successes": 6,
+   "value": 1.0
+  },
+  "verdicts": {
+   "PASSED": 6
+  },
+  "wall_clock_seconds": 7.83
+ },
+ "parameters": {
+  "certification_url": "http://localhost:8083",
+  "concurrency": 3,
+  "orchestrator_url": "http://localhost:8100",
+  "profile": "COMPLIANT",
+  "run_suite": "smoke",
+  "runs": 6
+ },
+ "started_at": "2026-10-03T13:10:23.945864+00:00",
+ "suite": "end-to-end"
+}

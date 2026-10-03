@@ -1,0 +1,35 @@
+[project]
+name = "fixai-agent-orchestrator"
+version = "0.1.0"
+description = "LangGraph workflow: plan -> simulator run -> diagnose -> report -> human approval gate"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "fixai-common",
+    "fixai-fix-agent",
+    "fixai-certification-agent",
+    "fixai-knowledge-agent",
+    "fixai-log-analysis-agent",
+    "fixai-report-agent",
+    "fixai-human-review-agent",
+    "langgraph==1.2.12",
+    "langgraph-checkpoint-sqlite==3.1.1",
+]
+
+[project.scripts]
+fixai-agent-orchestrator = "fixai_orchestrator.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+fixai-fix-agent = { workspace = true }
+fixai-certification-agent = { workspace = true }
+fixai-knowledge-agent = { workspace = true }
+fixai-log-analysis-agent = { workspace = true }
+fixai-report-agent = { workspace = true }
+fixai-human-review-agent = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_orchestrator"]

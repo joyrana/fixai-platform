@@ -1,0 +1,105 @@
+{
+ "run_id": "7f877232-7858-4403-a883-45abe850f878",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIXT.1.1|9=104|35=A|34=1|49=FX7f87723278-00|52=20261003-11:58:39.897|56=SIM-REJECT_ALL_ORDERS|98=0|108=30|141=Y|1137=9|10=167|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIXT.1.1|9=104|35=A|34=1|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:58:39.900|56=FX7f87723278-00|98=0|108=30|141=Y|1137=9|10=152|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 10,
+     "raw_redacted": "8=FIXT.1.1|9=173|35=D|34=2|49=FX7f87723278-00|52=20261003-11:58:39.901|56=SIM-REJECT_ALL_ORDERS|1128=9|11=FX7f87723278-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:58:39.901|10=087|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 11,
+     "raw_redacted": "8=FIXT.1.1|9=251|35=8|34=2|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:58:39.902|56=FX7f87723278-00|1128=9|6=0|11=FX7f87723278-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=100|39=8|40=2|44=100.00|54=1|55=AAPL|58=Rejected by broker option|60=20261003-11:58:39.902|103=0|150=8|151=0|10=216|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/11"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 13,
+     "raw_redacted": "8=FIXT.1.1|9=114|35=5|34=3|49=FX7f87723278-00|52=20261003-11:58:40.897|56=SIM-REJECT_ALL_ORDERS|58=Certification scenario complete|10=233|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/13"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIXT.1.1|9=79|35=5|34=3|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:58:40.899|56=FX7f87723278-00|10=233|",
+     "ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/14"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "bc368f3a-85f1-44a5-abed-f68d09efbb1b",
+   "failed_assertions": [
+    {
+     "actual": "8",
+     "evidence_ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/11",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "ExecType"
+    },
+    {
+     "actual": "8",
+     "evidence_ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/11",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "OrdStatus"
+    },
+    {
+     "actual": "0",
+     "evidence_ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/11",
+     "expected": "eq 100",
+     "step": 3,
+     "subject": "LeavesQty"
+    },
+    {
+     "actual": "0 == 100",
+     "evidence_ref": "run/7f877232-7858-4403-a883-45abe850f878/exec/bc368f3a-85f1-44a5-abed-f68d09efbb1b/evidence/11",
+     "expected": "true",
+     "step": 3,
+     "subject": "CumQty + LeavesQty == OrderQty"
+    }
+   ],
+   "failure_summary": "Step 3 (New order acknowledgement): 4 assertion(s) failed on evidence #11; ExecType expected == 0 but was 8",
+   "scenario_id": "ORD-001",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

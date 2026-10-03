@@ -1,0 +1,30 @@
+id: NEG-001
+version: 1
+title: Order for unknown instrument rejected
+description: An order for an unknown symbol must be rejected with ExecType=8, OrdStatus=8, OrdRejReason=1 and Text.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, reject, reference-data]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Buy unknown symbol ZZZZ
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: ZZZZ
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "10"
+        OrdType: "1"
+  - expect:
+      description: Order rejected
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: "8"}
+        OrdStatus: {equals: "8"}
+        OrdRejReason: {equals: "1"}
+        Text: {present: true}
+        LeavesQty: {numericEquals: "0"}

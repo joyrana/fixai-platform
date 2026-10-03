@@ -1,0 +1,28 @@
+id: BND-001
+version: 1
+title: Maximum permitted quantity accepted
+description: A resting order at exactly the 1,000,000 quantity limit must be accepted.
+category: BOUNDARY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, quantity, limits]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Buy 1,000,000 AAPL limit 100.00
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "1000000"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Accepted
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        OrdStatus: {equals: "0"}
+        LeavesQty: {numericEquals: "1000000"}

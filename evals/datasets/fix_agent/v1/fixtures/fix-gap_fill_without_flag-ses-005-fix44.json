@@ -1,0 +1,151 @@
+{
+ "run_id": "bd616301-e1e8-4650-8fbb-183798a0f06d",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=101|35=A|34=1|49=FXbd616301e1-00|52=20261003-11:57:09.780|56=SIM-GAP_FILL_WITHOUT_FLAG|98=0|108=30|141=Y|10=145|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=101|35=A|34=1|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.785|56=FXbd616301e1-00|98=0|108=30|141=Y|10=150|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=158|35=D|34=2|49=FXbd616301e1-00|52=20261003-11:57:09.786|56=SIM-GAP_FILL_WITHOUT_FLAG|11=FXbd616301e1-00-o1|21=1|38=10|40=1|54=1|55=IBM|60=20261003-11:57:09.786|10=106|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=202|35=8|34=2|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.787|56=FXbd616301e1-00|6=0|11=FXbd616301e1-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=10|39=0|40=1|54=1|55=IBM|60=20261003-11:57:09.787|150=0|151=10|10=217|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 11,
+     "raw_redacted": "8=FIX.4.4|9=220|35=8|34=3|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.787|56=FXbd616301e1-00|6=180|11=FXbd616301e1-00-o1|14=10|17=SIM-E-2|31=180.00|32=10|37=SIM-O-1|38=10|39=2|40=1|54=1|55=IBM|60=20261003-11:57:09.787|150=F|151=0|10=041|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/11"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "2",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=92|35=2|34=3|49=FXbd616301e1-00|52=20261003-11:57:09.788|56=SIM-GAP_FILL_WITHOUT_FLAG|7=1|16=0|10=154|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/12"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "4",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.4|9=119|35=4|34=1|43=Y|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.789|56=FXbd616301e1-00|122=20261003-11:57:09.789|36=2|10=054|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/13"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 14,
+     "raw_redacted": "8=FIX.4.4|9=233|35=8|34=2|43=Y|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.789|56=FXbd616301e1-00|122=20261003-11:57:09.787|6=0|11=FXbd616301e1-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=10|39=0|40=1|54=1|55=IBM|60=20261003-11:57:09.787|150=0|151=10|10=234|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/14"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "3",
+     "ordinal": 18,
+     "raw_redacted": "8=FIX.4.4|9=157|35=3|34=4|49=FXbd616301e1-00|52=20261003-11:57:09.790|56=SIM-GAP_FILL_WITHOUT_FLAG|45=1|58=Value is incorrect (out of range) for this tag|371=36|372=4|373=5|10=151|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/18"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 5,
+     "msg_type": "5",
+     "ordinal": 20,
+     "raw_redacted": "8=FIX.4.4|9=118|35=5|34=5|49=FXbd616301e1-00|52=20261003-11:57:09.791|56=SIM-GAP_FILL_WITHOUT_FLAG|58=Certification scenario complete|10=041|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/20"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 21,
+     "raw_redacted": "8=FIX.4.4|9=251|35=8|34=3|43=Y|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.789|56=FXbd616301e1-00|122=20261003-11:57:09.787|6=180|11=FXbd616301e1-00-o1|14=10|17=SIM-E-2|31=180.00|32=10|37=SIM-O-1|38=10|39=2|40=1|54=1|55=IBM|60=20261003-11:57:09.787|150=F|151=0|10=058|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/21"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 22,
+     "raw_redacted": "8=FIX.4.4|9=83|35=5|34=4|49=SIM-GAP_FILL_WITHOUT_FLAG|52=20261003-11:57:09.791|56=FXbd616301e1-00|10=029|",
+     "ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/22"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "d25b93e5-24d7-49f4-9cd3-d5735c3477a0",
+   "failed_assertions": [
+    {
+     "actual": "<absent>",
+     "evidence_ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/13",
+     "expected": "== Y",
+     "step": 5,
+     "subject": "GapFillFlag"
+    },
+    {
+     "actual": "Reject RefSeqNum=1 RefTagID=36 SessionRejectReason=5 Text=Value is incorrect (out of range) for this tag",
+     "evidence_ref": "run/bd616301-e1e8-4650-8fbb-183798a0f06d/exec/d25b93e5-24d7-49f4-9cd3-d5735c3477a0/evidence/18",
+     "expected": "no Reject(3)",
+     "step": null,
+     "subject": "Counterparty messages pass platform session-level validation"
+    }
+   ],
+   "failure_summary": "Step 5 (Administrative messages gap-filled): 1 assertion(s) failed on evidence #13; GapFillFlag expected == Y but was <absent>",
+   "scenario_id": "SES-005",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

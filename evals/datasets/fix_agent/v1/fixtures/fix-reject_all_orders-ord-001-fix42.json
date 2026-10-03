@@ -1,0 +1,105 @@
+{
+ "run_id": "b81b8123-dff3-446d-be9a-e9ccb883c482",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.2|9=97|35=A|34=1|49=FXb81b8123df-00|52=20261003-11:57:49.126|56=SIM-REJECT_ALL_ORDERS|98=0|108=30|141=Y|10=092|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.2|9=97|35=A|34=1|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:57:49.129|56=FXb81b8123df-00|98=0|108=30|141=Y|10=095|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.2|9=166|35=D|34=2|49=FXb81b8123df-00|52=20261003-11:57:49.130|56=SIM-REJECT_ALL_ORDERS|11=FXb81b8123df-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:57:49.130|10=178|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.2|9=249|35=8|34=2|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:57:49.131|56=FXb81b8123df-00|6=0|11=FXb81b8123df-00-o1|14=0|17=SIM-E-1|20=0|37=SIM-O-1|38=100|39=8|40=2|44=100.00|54=1|55=AAPL|58=Rejected by broker option|60=20261003-11:57:49.131|103=0|150=8|151=0|10=008|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.2|9=114|35=5|34=3|49=FXb81b8123df-00|52=20261003-11:57:50.126|56=SIM-REJECT_ALL_ORDERS|58=Certification scenario complete|10=006|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/12"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.2|9=79|35=5|34=3|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:57:50.128|56=FXb81b8123df-00|10=006|",
+     "ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/13"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "61b584a5-4d74-4d73-8240-84d1bc9f88d7",
+   "failed_assertions": [
+    {
+     "actual": "8",
+     "evidence_ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/10",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "ExecType"
+    },
+    {
+     "actual": "8",
+     "evidence_ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/10",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "OrdStatus"
+    },
+    {
+     "actual": "0",
+     "evidence_ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/10",
+     "expected": "eq 100",
+     "step": 3,
+     "subject": "LeavesQty"
+    },
+    {
+     "actual": "0 == 100",
+     "evidence_ref": "run/b81b8123-dff3-446d-be9a-e9ccb883c482/exec/61b584a5-4d74-4d73-8240-84d1bc9f88d7/evidence/10",
+     "expected": "true",
+     "step": 3,
+     "subject": "CumQty + LeavesQty == OrderQty"
+    }
+   ],
+   "failure_summary": "Step 3 (New order acknowledgement): 4 assertion(s) failed on evidence #10; ExecType expected == 0 but was 8",
+   "scenario_id": "ORD-001",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

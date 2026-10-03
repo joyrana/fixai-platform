@@ -1,0 +1,19 @@
+[project]
+name = "fixai-human-review-agent"
+version = "0.1.0"
+description = "Human review agent: prepares and files approval requests, never approves"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fixai-common"]
+
+[project.scripts]
+fixai-human-review-agent = "fixai_human_review_agent.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_human_review_agent"]

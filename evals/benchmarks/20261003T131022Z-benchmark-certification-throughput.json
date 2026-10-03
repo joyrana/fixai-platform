@@ -1,0 +1,44 @@
+{
+ "environment": {
+  "code_commit": "b7943fb342b3523a583c3a888d39249c4683d13e-dirty",
+  "cpu_count": 4,
+  "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+  "python": "3.11.15"
+ },
+ "finished_at": "2026-10-03T13:10:22.602935+00:00",
+ "metrics": {
+  "errors": [],
+  "runs_per_minute": 24.37,
+  "scenarios_per_minute": 584.99,
+  "seconds_to_verdict": {
+   "mean": 9.617,
+   "n": 8,
+   "p50": 9.509,
+   "p95": 10.289,
+   "p99": 10.289
+  },
+  "success": {
+   "ci95": [
+    0.6756,
+    1.0
+   ],
+   "n": 8,
+   "successes": 8,
+   "value": 1.0
+  },
+  "verdicts": {
+   "PASSED": 8
+  },
+  "wall_clock_seconds": 19.69
+ },
+ "parameters": {
+  "certification_url": "http://localhost:8083",
+  "concurrency": 4,
+  "orchestrator_url": "http://localhost:8100",
+  "profile": "COMPLIANT",
+  "run_suite": "full-certification",
+  "runs": 8
+ },
+ "started_at": "2026-10-03T13:10:02.823828+00:00",
+ "suite": "certification-throughput"
+}

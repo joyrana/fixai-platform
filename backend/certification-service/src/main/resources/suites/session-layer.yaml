@@ -1,0 +1,4 @@
+id: session-layer
+title: FIX session layer
+description: Logon, heartbeats, sequence recovery, resend handling and logout.
+scenarios: [SES-001, SES-002, SES-003, SES-004, SES-005, SES-006, SES-007, SES-008]

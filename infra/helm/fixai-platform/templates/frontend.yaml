@@ -1,0 +1,90 @@
+{{- $name := "frontend" }}
+{{- $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+    fixai.io/tier: ui
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fixai.labels" $root | nindent 8 }}
+        {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 8 }}
+        fixai.io/tier: ui
+    spec:
+      {{- include "fixai.podSecurity" (dict "root" $root) | nindent 6 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "fixai.image" (dict "root" $root "image" .Values.frontend.image) }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          {{- include "fixai.containerSecurity" $root | nindent 10 }}
+          ports:
+            - { name: http, containerPort: 8080 }
+          env:
+            - { name: BROKER_URL, value: "http://broker-service:8080" }
+            - { name: CERTIFICATION_URL, value: "http://certification-service:8080" }
+            - { name: WORKFLOW_URL, value: "http://workflow-service:8080" }
+            - { name: SIMULATOR_URL, value: "http://fix-simulator:8080" }
+            - { name: ORCHESTRATOR_URL, value: "http://agent-orchestrator:8100" }
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+            - { name: conf, mountPath: /etc/nginx/conf.d }
+      volumes:
+        - { name: tmp, emptyDir: {} }
+        - { name: conf, emptyDir: {} }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+spec:
+  selector:
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+  ports:
+    - { name: http, port: 8080, targetPort: http }
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fixai
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- if .Values.ingress.tlsSecret }}
+  tls:
+    - hosts: [{{ .Values.ingress.host | quote }}]
+      secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: frontend, port: { name: http } }
+{{- end }}

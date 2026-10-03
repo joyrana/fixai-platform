@@ -1,0 +1,46 @@
+id: NEG-004
+version: 1
+title: Duplicate ClOrdID rejected
+description: A second order reusing the ClOrdID of an open order must be rejected with OrdRejReason=6.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, reject, idempotency]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Resting limit order
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: First order acknowledged
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        OrdStatus: {equals: "0"}
+  - send:
+      description: Second order with the same ClOrdID
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Duplicate rejected
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: "8"}
+        OrdRejReason: {equals: "6"}

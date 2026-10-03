@@ -1,0 +1,104 @@
+{
+ "run_id": "828d9389-21d9-4955-a2ac-c01e780f2c6b",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.2|9=100|35=A|34=1|49=FX828d938921-00|52=20261003-11:57:45.861|56=SIM-MISSING_ORIG_CLORDID|98=0|108=30|141=Y|10=231|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.2|9=100|35=A|34=1|49=SIM-MISSING_ORIG_CLORDID|52=20261003-11:57:45.863|56=FX828d938921-00|98=0|108=30|141=Y|10=233|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.2|9=169|35=D|34=2|49=FX828d938921-00|52=20261003-11:57:45.864|56=SIM-MISSING_ORIG_CLORDID|11=FX828d938921-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=GOOG|60=20261003-11:57:45.864|10=192|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.2|9=219|35=8|34=2|49=SIM-MISSING_ORIG_CLORDID|52=20261003-11:57:45.865|56=FX828d938921-00|6=0|11=FX828d938921-00-o1|14=0|17=SIM-E-1|20=0|37=SIM-O-1|38=100|39=0|40=2|44=100.00|54=1|55=GOOG|60=20261003-11:57:45.865|150=0|151=100|10=053|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "G",
+     "ordinal": 11,
+     "raw_redacted": "8=FIX.4.2|9=191|35=G|34=3|49=FX828d938921-00|52=20261003-11:57:45.865|56=SIM-MISSING_ORIG_CLORDID|11=FX828d938921-00-r1|21=1|38=200|40=2|41=FX828d938921-00-o1|44=100.00|54=1|55=GOOG|60=20261003-11:57:45.865|10=166|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/11"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.2|9=219|35=8|34=3|49=SIM-MISSING_ORIG_CLORDID|52=20261003-11:57:45.866|56=FX828d938921-00|6=0|11=FX828d938921-00-r1|14=0|17=SIM-E-2|20=0|37=SIM-O-1|38=200|39=0|40=2|44=100.00|54=1|55=GOOG|60=20261003-11:57:45.866|150=5|151=200|10=067|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIX.4.2|9=117|35=5|34=4|49=FX828d938921-00|52=20261003-11:57:46.861|56=SIM-MISSING_ORIG_CLORDID|58=Certification scenario complete|10=125|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/14"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIX.4.2|9=82|35=5|34=4|49=SIM-MISSING_ORIG_CLORDID|52=20261003-11:57:46.862|56=FX828d938921-00|10=115|",
+     "ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/15"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "cecccd76-b108-400e-8875-351999c5b80c",
+   "failed_assertions": [
+    {
+     "actual": "<absent>",
+     "evidence_ref": "run/828d9389-21d9-4955-a2ac-c01e780f2c6b/exec/cecccd76-b108-400e-8875-351999c5b80c/evidence/12",
+     "expected": "== FX828d938921-00-o1",
+     "step": 5,
+     "subject": "OrigClOrdID"
+    }
+   ],
+   "failure_summary": "Step 5 (Replace confirmation): 1 assertion(s) failed on evidence #12; OrigClOrdID expected == FX828d938921-00-o1 but was <absent>",
+   "scenario_id": "ORD-005",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

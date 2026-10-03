@@ -1,0 +1,32 @@
+id: NEG-003
+version: 1
+title: Cancel of unknown order rejected
+description: A cancel for an unknown OrigClOrdID must produce OrderCancelReject(9) with CxlRejResponseTo=1 and CxlRejReason=1, never a cancel confirmation.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, cancel, reject]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Cancel an order that was never sent
+      msgType: F
+      fields:
+        OrigClOrdID: "${id:never}"
+        ClOrdID: "${id:c1}"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+  - expect:
+      description: Cancel rejected
+      msgType: "9"
+      match: {ClOrdID: "${id:c1}"}
+      assert:
+        CxlRejResponseTo: {equals: "1"}
+        CxlRejReason: {equals: "1"}
+        OrigClOrdID: {equals: "${id:never}"}
+  - expectNone:
+      description: No cancel confirmation for an unknown order
+      msgType: "8"
+      match: {ClOrdID: "${id:c1}"}
+      windowMs: 1000

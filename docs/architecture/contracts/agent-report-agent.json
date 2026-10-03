@@ -1,0 +1,334 @@
+{
+  "agent": "report-agent",
+  "allowedTools": [
+    "get_certification_status",
+    "retrieve_certification_evidence"
+  ],
+  "callerRoles": [
+    "ADMIN",
+    "AI_AGENT",
+    "CERTIFICATION_ENGINEER",
+    "SERVICE"
+  ],
+  "input": {
+    "$defs": {
+      "HypothesisSummary": {
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "likelihood": {
+            "title": "Likelihood",
+            "type": "string"
+          },
+          "scenario_id": {
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "title",
+          "category",
+          "likelihood"
+        ],
+        "title": "HypothesisSummary",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "audience": {
+        "default": "certification-engineer",
+        "pattern": "^(certification-engineer|broker-manager|executive)$",
+        "title": "Audience",
+        "type": "string"
+      },
+      "hypotheses": {
+        "items": {
+          "$ref": "#/$defs/HypothesisSummary"
+        },
+        "maxItems": 50,
+        "title": "Hypotheses",
+        "type": "array"
+      },
+      "run_id": {
+        "pattern": "^[0-9a-f-]{36}$",
+        "title": "Run Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "run_id"
+    ],
+    "title": "ReportRequest",
+    "type": "object"
+  },
+  "maxToolCalls": 3,
+  "output": {
+    "$defs": {
+      "EvidenceRef": {
+        "additionalProperties": false,
+        "description": "Pointer to persisted platform state. `ref` is stable and resolvable through MCP tools.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "evidence",
+              "assertion",
+              "protocol_check",
+              "step",
+              "log",
+              "document",
+              "report",
+              "run"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "ref": {
+            "description": "e.g. run/<id>/exec/<id>/evidence/<ordinal>",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "title": "EvidenceRef",
+        "type": "object"
+      },
+      "Fact": {
+        "additionalProperties": false,
+        "description": "A statement directly supported by persisted evidence.",
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            "minItems": 1,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "statement": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement",
+          "evidence"
+        ],
+        "title": "Fact",
+        "type": "object"
+      },
+      "HypothesisSummary": {
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "likelihood": {
+            "title": "Likelihood",
+            "type": "string"
+          },
+          "scenario_id": {
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "title",
+          "category",
+          "likelihood"
+        ],
+        "title": "HypothesisSummary",
+        "type": "object"
+      },
+      "ScenarioFinding": {
+        "properties": {
+          "facts": {
+            "items": {
+              "$ref": "#/$defs/Fact"
+            },
+            "title": "Facts",
+            "type": "array"
+          },
+          "failure_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Summary"
+          },
+          "likely_causes": {
+            "items": {
+              "$ref": "#/$defs/HypothesisSummary"
+            },
+            "title": "Likely Causes",
+            "type": "array"
+          },
+          "scenario_id": {
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "status",
+          "failure_summary",
+          "facts",
+          "likely_causes"
+        ],
+        "title": "ScenarioFinding",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "disclaimer": {
+        "default": "The verdict above is produced by the certification engine from executable assertions over persisted evidence. Narrative text and likely causes are AI-generated aids for engineers and are not part of the verdict.",
+        "title": "Disclaimer",
+        "type": "string"
+      },
+      "evidence_digest": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Evidence Digest"
+      },
+      "executive_summary": {
+        "title": "Executive Summary",
+        "type": "string"
+      },
+      "findings": {
+        "items": {
+          "$ref": "#/$defs/ScenarioFinding"
+        },
+        "title": "Findings",
+        "type": "array"
+      },
+      "fix_version": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Fix Version"
+      },
+      "next_steps": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Next Steps",
+        "type": "array"
+      },
+      "not_ready_reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Not Ready Reason"
+      },
+      "ready": {
+        "default": true,
+        "title": "Ready",
+        "type": "boolean"
+      },
+      "run_id": {
+        "title": "Run Id",
+        "type": "string"
+      },
+      "scenarios_errored": {
+        "title": "Scenarios Errored",
+        "type": "integer"
+      },
+      "scenarios_failed": {
+        "title": "Scenarios Failed",
+        "type": "integer"
+      },
+      "scenarios_passed": {
+        "title": "Scenarios Passed",
+        "type": "integer"
+      },
+      "scenarios_total": {
+        "title": "Scenarios Total",
+        "type": "integer"
+      },
+      "status": {
+        "title": "Status",
+        "type": "string"
+      },
+      "verdict": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Verdict"
+      },
+      "verdict_source": {
+        "default": "certification-engine",
+        "title": "Verdict Source",
+        "type": "string"
+      }
+    },
+    "required": [
+      "run_id",
+      "status",
+      "verdict",
+      "evidence_digest",
+      "fix_version",
+      "scenarios_total",
+      "scenarios_passed",
+      "scenarios_failed",
+      "scenarios_errored",
+      "executive_summary",
+      "findings",
+      "next_steps"
+    ],
+    "title": "ReportDraft",
+    "type": "object"
+  },
+  "promptVersion": "report-agent/draft@1",
+  "timeoutSeconds": 60,
+  "version": "1.0.0"
+}

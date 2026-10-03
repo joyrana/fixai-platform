@@ -1,0 +1,34 @@
+[project]
+name = "fixai-evals"
+version = "0.1.0"
+description = "Reproducible evaluation and benchmarking harness for FIXAI agents, tools and workflows"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "fixai-common", "fixai-certification-mcp", "fixai-fix-mcp", "fixai-knowledge-mcp", "fixai-operations-mcp",
+    "fixai-fix-agent", "fixai-certification-agent", "fixai-knowledge-agent", "fixai-log-analysis-agent",
+    "fixai-report-agent", "fixai-human-review-agent", "fixai-agent-orchestrator", "pyyaml==6.0.3",
+]
+
+[project.scripts]
+fixai-evals = "fixai_evals.cli:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+fixai-certification-mcp = { workspace = true }
+fixai-fix-mcp = { workspace = true }
+fixai-knowledge-mcp = { workspace = true }
+fixai-operations-mcp = { workspace = true }
+fixai-fix-agent = { workspace = true }
+fixai-certification-agent = { workspace = true }
+fixai-knowledge-agent = { workspace = true }
+fixai-log-analysis-agent = { workspace = true }
+fixai-report-agent = { workspace = true }
+fixai-human-review-agent = { workspace = true }
+fixai-agent-orchestrator = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fixai_evals"]

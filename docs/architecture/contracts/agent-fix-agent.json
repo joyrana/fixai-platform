@@ -1,0 +1,325 @@
+{
+  "agent": "fix-agent",
+  "allowedTools": [
+    "inspect_message",
+    "retrieve_certification_evidence",
+    "retrieve_session_events",
+    "search_fix_documentation"
+  ],
+  "callerRoles": [
+    "ADMIN",
+    "AI_AGENT",
+    "CERTIFICATION_ENGINEER",
+    "SERVICE"
+  ],
+  "input": {
+    "properties": {
+      "include_knowledge": {
+        "default": true,
+        "title": "Include Knowledge",
+        "type": "boolean"
+      },
+      "run_id": {
+        "pattern": "^[0-9a-f-]{36}$",
+        "title": "Run Id",
+        "type": "string"
+      },
+      "scenario_id": {
+        "anyOf": [
+          {
+            "pattern": "^[A-Za-z0-9._-]{1,64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Scenario Id"
+      }
+    },
+    "required": [
+      "run_id"
+    ],
+    "title": "DiagnoseRequest",
+    "type": "object"
+  },
+  "maxToolCalls": 16,
+  "output": {
+    "$defs": {
+      "Citation": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk_id": {
+            "title": "Chunk Id",
+            "type": "string"
+          },
+          "doc_id": {
+            "title": "Doc Id",
+            "type": "string"
+          },
+          "quote": {
+            "maxLength": 1200,
+            "title": "Quote",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Score"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "doc_id",
+          "chunk_id",
+          "title",
+          "quote"
+        ],
+        "title": "Citation",
+        "type": "object"
+      },
+      "EvidenceRef": {
+        "additionalProperties": false,
+        "description": "Pointer to persisted platform state. `ref` is stable and resolvable through MCP tools.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "evidence",
+              "assertion",
+              "protocol_check",
+              "step",
+              "log",
+              "document",
+              "report",
+              "run"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "ref": {
+            "description": "e.g. run/<id>/exec/<id>/evidence/<ordinal>",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "title": "EvidenceRef",
+        "type": "object"
+      },
+      "Fact": {
+        "additionalProperties": false,
+        "description": "A statement directly supported by persisted evidence.",
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            "minItems": 1,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "statement": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement",
+          "evidence"
+        ],
+        "title": "Fact",
+        "type": "object"
+      },
+      "FailureCategory": {
+        "description": "Stable failure taxonomy shared by agents, MCP tools and evaluation datasets.",
+        "enum": [
+          "MISSING_REQUIRED_FIELD",
+          "INCORRECT_FIELD_VALUE",
+          "QUANTITY_INCONSISTENCY",
+          "DUPLICATE_IDENTIFIER",
+          "MISSING_RESPONSE",
+          "UNEXPECTED_ACCEPTANCE",
+          "UNEXPECTED_REJECTION",
+          "SESSION_PROTOCOL_VIOLATION",
+          "SEQUENCE_RECOVERY_FAILURE",
+          "LATENCY_SLA_BREACH",
+          "CONNECTIVITY",
+          "UNKNOWN"
+        ],
+        "title": "FailureCategory",
+        "type": "string"
+      },
+      "Hypothesis": {
+        "additionalProperties": false,
+        "description": "A ranked root-cause candidate. Never presented as verified.",
+        "properties": {
+          "category": {
+            "$ref": "#/$defs/FailureCategory"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "maxItems": 10,
+            "title": "Citations",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            "minItems": 1,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "explanation": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "likelihood": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Likelihood",
+            "type": "string"
+          },
+          "remediation": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Remediation",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "category",
+          "likelihood",
+          "explanation",
+          "evidence"
+        ],
+        "title": "Hypothesis",
+        "type": "object"
+      },
+      "ScenarioDiagnosis": {
+        "properties": {
+          "execution_id": {
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/$defs/Fact"
+            },
+            "title": "Facts",
+            "type": "array"
+          },
+          "hypotheses": {
+            "items": {
+              "$ref": "#/$defs/Hypothesis"
+            },
+            "title": "Hypotheses",
+            "type": "array"
+          },
+          "scenario_id": {
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "execution_id",
+          "status",
+          "facts",
+          "hypotheses"
+        ],
+        "title": "ScenarioDiagnosis",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "abstain_reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Abstain Reason"
+      },
+      "abstained": {
+        "default": false,
+        "title": "Abstained",
+        "type": "boolean"
+      },
+      "run_id": {
+        "title": "Run Id",
+        "type": "string"
+      },
+      "scenarios": {
+        "items": {
+          "$ref": "#/$defs/ScenarioDiagnosis"
+        },
+        "title": "Scenarios",
+        "type": "array"
+      },
+      "verdict": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Verdict"
+      }
+    },
+    "required": [
+      "run_id",
+      "verdict",
+      "scenarios"
+    ],
+    "title": "Diagnosis",
+    "type": "object"
+  },
+  "promptVersion": "fix-agent/diagnose@1",
+  "timeoutSeconds": 120.0,
+  "version": "1.0.0"
+}

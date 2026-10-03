@@ -1,0 +1,19 @@
+[project]
+name = "fixai-log-analysis-agent"
+version = "0.1.0"
+description = "Log analysis agent: protocol anomaly detection over sanitized session logs"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fixai-common"]
+
+[project.scripts]
+fixai-log-analysis-agent = "fixai_log_analysis_agent.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_log_analysis_agent"]

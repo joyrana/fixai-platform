@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fixai.platform/schemas/scenario/v1",
+  "title": "FIXAI certification scenario (v1)",
+  "description": "Mirror of the strict YAML parser in certification-service (ScenarioYamlParser). The service additionally lints field names against each declared FIX version's dictionary and checks that variables are captured before use.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "title", "category", "fixVersions", "steps"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,64}$"},
+    "version": {"type": "integer", "minimum": 1},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "category": {"enum": ["SESSION", "POSITIVE", "NEGATIVE", "BOUNDARY", "RECOVERY"]},
+    "fixVersions": {"type": "array", "minItems": 1, "items": {"enum": ["FIX42", "FIX44", "FIX50SP2"]}},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "mandatory": {"type": "boolean", "default": true},
+    "allowInboundSessionRejects": {"type": "boolean", "default": false},
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heartbeatIntervalSeconds": {"type": "integer", "minimum": 1, "maximum": 300},
+        "resetOnLogon": {"type": "boolean"},
+        "targetCompIdSuffix": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,16}$"}
+      }
+    },
+    "steps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/step"}}
+  },
+  "$defs": {
+    "description": {"type": "string"},
+    "match": {"type": "object", "additionalProperties": {"type": "string"}},
+    "check": {
+      "type": "object", "minProperties": 1, "maxProperties": 1, "additionalProperties": false,
+      "properties": {
+        "equals": {"oneOf": [{"type": "string"}, {"type": "object", "additionalProperties": {"type": "string"}, "propertyNames": {"enum": ["FIX42", "FIX44", "FIX50SP2", "default"]}}]},
+        "notEquals": {"type": "string"},
+        "present": {"type": "boolean"},
+        "oneOf": {"type": "array", "items": {"type": "string"}},
+        "matches": {"type": "string"},
+        "gt": {"type": "string"}, "gte": {"type": "string"}, "lt": {"type": "string"}, "lte": {"type": "string"},
+        "numericEquals": {"type": "string"}
+      }
+    },
+    "step": {
+      "type": "object", "minProperties": 1, "maxProperties": 1, "additionalProperties": false,
+      "properties": {
+        "logon": {"type": "object", "additionalProperties": false, "properties": {"description": {"$ref": "#/$defs/description"}, "timeoutMs": {"type": "integer"}}},
+        "logonRejected": {"type": "object", "additionalProperties": false, "properties": {"description": {"$ref": "#/$defs/description"}, "timeoutMs": {"type": "integer"}}},
+        "send": {"type": "object", "additionalProperties": false, "required": ["msgType"], "properties": {"description": {"$ref": "#/$defs/description"}, "msgType": {"type": "string"}, "fields": {"type": "object"}}},
+        "expect": {"type": "object", "additionalProperties": false, "required": ["msgType"], "properties": {
+          "description": {"$ref": "#/$defs/description"}, "direction": {"enum": ["inbound", "outbound"]}, "msgType": {"type": "string"},
+          "timeoutMs": {"type": "integer"}, "match": {"$ref": "#/$defs/match"},
+          "assert": {"type": "object", "additionalProperties": {"$ref": "#/$defs/check"}},
+          "invariants": {"type": "array", "items": {"type": "string"}},
+          "capture": {"type": "object", "additionalProperties": {"type": "string"}}}},
+        "expectNone": {"type": "object", "additionalProperties": false, "required": ["msgType"], "properties": {"description": {"$ref": "#/$defs/description"}, "msgType": {"type": "string"}, "windowMs": {"type": "integer"}, "match": {"$ref": "#/$defs/match"}}},
+        "skipOutboundSequence": {"type": "object", "additionalProperties": false, "required": ["count"], "properties": {"description": {"$ref": "#/$defs/description"}, "count": {"type": "integer", "minimum": 1, "maximum": 1000}, "captureAs": {"type": "string"}}},
+        "logout": {"type": "object", "additionalProperties": false, "properties": {"description": {"$ref": "#/$defs/description"}, "timeoutMs": {"type": "integer"}}},
+        "disconnect": {"type": "object", "additionalProperties": false, "properties": {"description": {"$ref": "#/$defs/description"}}},
+        "reconnect": {"type": "object", "additionalProperties": false, "properties": {"description": {"$ref": "#/$defs/description"}, "timeoutMs": {"type": "integer"}}},
+        "pause": {"type": "object", "additionalProperties": false, "required": ["ms"], "properties": {"description": {"$ref": "#/$defs/description"}, "ms": {"type": "integer", "minimum": 0, "maximum": 60000}}}
+      }
+    }
+  }
+}

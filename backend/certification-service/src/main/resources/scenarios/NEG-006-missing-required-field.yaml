@@ -1,0 +1,31 @@
+id: NEG-006
+version: 1
+title: Missing required field gets session-level Reject
+description: A NewOrderSingle without Side(54) must be rejected at session level with RefTagID=54 and SessionRejectReason=1.
+category: NEGATIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, validation, reject]
+allowInboundSessionRejects: true
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: NewOrderSingle without Side
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "1"
+  - expect:
+      description: Session-level Reject
+      msgType: "3"
+      assert:
+        RefTagID: {equals: "54"}
+        SessionRejectReason: {equals: "1"}
+  - expectNone:
+      description: No execution report for an invalid message
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      windowMs: 1000

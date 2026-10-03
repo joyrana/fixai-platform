@@ -1,0 +1,155 @@
+{
+  "agent": "knowledge-agent",
+  "allowedTools": [
+    "inspect_citations",
+    "retrieve_document",
+    "search_fix_documentation"
+  ],
+  "callerRoles": [
+    "ADMIN",
+    "AI_AGENT",
+    "CERTIFICATION_ENGINEER",
+    "SERVICE"
+  ],
+  "input": {
+    "properties": {
+      "question": {
+        "maxLength": 1000,
+        "minLength": 3,
+        "title": "Question",
+        "type": "string"
+      },
+      "tags": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tags"
+      },
+      "top_k": {
+        "default": 5,
+        "maximum": 10,
+        "minimum": 1,
+        "title": "Top K",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "question"
+    ],
+    "title": "QuestionRequest",
+    "type": "object"
+  },
+  "maxToolCalls": 4,
+  "output": {
+    "$defs": {
+      "Citation": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk_id": {
+            "title": "Chunk Id",
+            "type": "string"
+          },
+          "doc_id": {
+            "title": "Doc Id",
+            "type": "string"
+          },
+          "quote": {
+            "maxLength": 1200,
+            "title": "Quote",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Score"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "doc_id",
+          "chunk_id",
+          "title",
+          "quote"
+        ],
+        "title": "Citation",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "abstain_reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Abstain Reason"
+      },
+      "abstained": {
+        "default": false,
+        "title": "Abstained",
+        "type": "boolean"
+      },
+      "answer": {
+        "title": "Answer",
+        "type": "string"
+      },
+      "citations": {
+        "items": {
+          "$ref": "#/$defs/Citation"
+        },
+        "title": "Citations",
+        "type": "array"
+      },
+      "excluded_passages": {
+        "default": 0,
+        "title": "Excluded Passages",
+        "type": "integer"
+      },
+      "question": {
+        "title": "Question",
+        "type": "string"
+      },
+      "retrieved_chunk_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Retrieved Chunk Ids",
+        "type": "array"
+      }
+    },
+    "required": [
+      "question",
+      "answer",
+      "citations"
+    ],
+    "title": "Answer",
+    "type": "object"
+  },
+  "promptVersion": "knowledge-agent/answer@1",
+  "timeoutSeconds": 60,
+  "version": "1.0.0"
+}

@@ -1,0 +1,111 @@
+{
+ "run_id": "b6ebf52d-3e50-4cf3-b610-e0d6667e41cb",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=97|35=A|34=1|49=FXb6ebf52d3e-00|52=20261003-11:56:29.772|56=SIM-INCORRECT_CUM_QTY|98=0|108=30|141=Y|10=236|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=97|35=A|34=1|49=SIM-INCORRECT_CUM_QTY|52=20261003-11:56:29.775|56=FXb6ebf52d3e-00|98=0|108=30|141=Y|10=239|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=156|35=D|34=2|49=FXb6ebf52d3e-00|52=20261003-11:56:29.777|56=SIM-INCORRECT_CUM_QTY|11=FXb6ebf52d3e-00-o1|21=1|38=3000|40=1|54=1|55=IBM|60=20261003-11:56:29.776|10=225|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=202|35=8|34=2|49=SIM-INCORRECT_CUM_QTY|52=20261003-11:56:29.778|56=FXb6ebf52d3e-00|6=0|11=FXb6ebf52d3e-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=3000|39=0|40=1|54=1|55=IBM|60=20261003-11:56:29.777|150=0|151=3000|10=180|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 11,
+     "raw_redacted": "8=FIX.4.4|9=222|35=8|34=3|49=SIM-INCORRECT_CUM_QTY|52=20261003-11:56:29.778|56=FXb6ebf52d3e-00|6=180|11=FXb6ebf52d3e-00-o1|14=0|17=SIM-E-2|31=180.00|32=1500|37=SIM-O-1|38=3000|39=1|40=1|54=1|55=IBM|60=20261003-11:56:29.778|150=F|151=1500|10=110|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/11"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "8",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=222|35=8|34=4|49=SIM-INCORRECT_CUM_QTY|52=20261003-11:56:29.778|56=FXb6ebf52d3e-00|6=180|11=FXb6ebf52d3e-00-o1|14=1500|17=SIM-E-3|31=180.00|32=1500|37=SIM-O-1|38=3000|39=2|40=1|54=1|55=IBM|60=20261003-11:56:29.778|150=F|151=0|10=113|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIX.4.4|9=114|35=5|34=3|49=FXb6ebf52d3e-00|52=20261003-11:56:30.772|56=SIM-INCORRECT_CUM_QTY|58=Certification scenario complete|10=150|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/14"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 5,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIX.4.4|9=79|35=5|34=5|49=SIM-INCORRECT_CUM_QTY|52=20261003-11:56:30.774|56=FXb6ebf52d3e-00|10=152|",
+     "ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/15"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "be772fe7-c4cb-4296-ba64-d297cba4a639",
+   "failed_assertions": [
+    {
+     "actual": "0",
+     "evidence_ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/11",
+     "expected": "gt 0",
+     "step": 4,
+     "subject": "CumQty"
+    },
+    {
+     "actual": "1500 == 3000",
+     "evidence_ref": "run/b6ebf52d-3e50-4cf3-b610-e0d6667e41cb/exec/be772fe7-c4cb-4296-ba64-d297cba4a639/evidence/11",
+     "expected": "true",
+     "step": 4,
+     "subject": "CumQty + LeavesQty == OrderQty"
+    }
+   ],
+   "failure_summary": "Step 4 (Partial fill): 2 assertion(s) failed on evidence #11; CumQty expected gt 0 but was 0",
+   "scenario_id": "ORD-003",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

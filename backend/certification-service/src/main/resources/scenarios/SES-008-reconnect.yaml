@@ -1,0 +1,43 @@
+id: SES-008
+version: 1
+title: Reconnect preserves sequence continuity
+description: >
+  After an unexpected disconnect, reconnecting without sequence reset must resume at the next sequence numbers
+  with no ResendRequest from the counterparty.
+category: RECOVERY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, recovery, sequence]
+session:
+  resetOnLogon: false
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      msgType: "1"
+      description: TestRequest before disconnect
+      fields: {TestReqID: "${id:before}"}
+  - expect:
+      msgType: "0"
+      description: Heartbeat before disconnect
+      match: {TestReqID: "${id:before}"}
+  - disconnect:
+      description: Drop TCP connection without Logout
+  - reconnect:
+      description: Automatic reconnect and Logon
+      timeoutMs: 15000
+  - expect:
+      msgType: A
+      description: Logon after reconnect continues sequence numbers
+      assert:
+        MsgSeqNum: {gt: "1"}
+  - send:
+      msgType: "1"
+      description: TestRequest after reconnect
+      fields: {TestReqID: "${id:after}"}
+  - expect:
+      msgType: "0"
+      description: Heartbeat after reconnect
+      match: {TestReqID: "${id:after}"}
+  - expectNone:
+      msgType: "2"
+      description: No ResendRequest (no sequence gap)
+      windowMs: 1000
