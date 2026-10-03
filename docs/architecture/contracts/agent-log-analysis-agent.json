@@ -1,0 +1,204 @@
+{
+  "agent": "log-analysis-agent",
+  "allowedTools": [
+    "create_incident_draft",
+    "retrieve_sanitized_logs"
+  ],
+  "callerRoles": [
+    "ADMIN",
+    "AI_AGENT",
+    "CERTIFICATION_ENGINEER",
+    "SERVICE"
+  ],
+  "input": {
+    "properties": {
+      "create_incident": {
+        "default": false,
+        "title": "Create Incident",
+        "type": "boolean"
+      },
+      "execution_id": {
+        "pattern": "^[0-9a-f-]{36}$",
+        "title": "Execution Id",
+        "type": "string"
+      },
+      "max_lines": {
+        "default": 400,
+        "maximum": 1000,
+        "minimum": 1,
+        "title": "Max Lines",
+        "type": "integer"
+      },
+      "run_id": {
+        "pattern": "^[0-9a-f-]{36}$",
+        "title": "Run Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "run_id",
+      "execution_id"
+    ],
+    "title": "AnalyzeRequest",
+    "type": "object"
+  },
+  "maxToolCalls": 3,
+  "output": {
+    "$defs": {
+      "Anomaly": {
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "kind": {
+            "enum": [
+              "SESSION_REJECT",
+              "BUSINESS_REJECT",
+              "ORDER_REJECTED",
+              "CANCEL_REJECTED",
+              "SEQUENCE_GAP",
+              "SEQUENCE_REGRESSION",
+              "RESEND_REQUEST",
+              "SEQUENCE_RESET_WITHOUT_GAP_FILL",
+              "UNANSWERED_TEST_REQUEST",
+              "UNANSWERED_ORDER_REQUEST",
+              "SLOW_RESPONSE",
+              "LOGOUT_WITH_TEXT",
+              "ENGINE_ERROR_EVENT",
+              "INJECTION_TEXT"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "info"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 500,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "severity",
+          "summary",
+          "evidence"
+        ],
+        "title": "Anomaly",
+        "type": "object"
+      },
+      "EvidenceRef": {
+        "additionalProperties": false,
+        "description": "Pointer to persisted platform state. `ref` is stable and resolvable through MCP tools.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "evidence",
+              "assertion",
+              "protocol_check",
+              "step",
+              "log",
+              "document",
+              "report",
+              "run"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "ref": {
+            "description": "e.g. run/<id>/exec/<id>/evidence/<ordinal>",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "title": "EvidenceRef",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "anomalies": {
+        "items": {
+          "$ref": "#/$defs/Anomaly"
+        },
+        "title": "Anomalies",
+        "type": "array"
+      },
+      "execution_id": {
+        "title": "Execution Id",
+        "type": "string"
+      },
+      "highlights": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Highlights",
+        "type": "array"
+      },
+      "incident_draft_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Incident Draft Id"
+      },
+      "injection_flags": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Injection Flags",
+        "type": "array"
+      },
+      "lines_analyzed": {
+        "title": "Lines Analyzed",
+        "type": "integer"
+      },
+      "run_id": {
+        "title": "Run Id",
+        "type": "string"
+      },
+      "summary": {
+        "title": "Summary",
+        "type": "string"
+      }
+    },
+    "required": [
+      "run_id",
+      "execution_id",
+      "lines_analyzed",
+      "anomalies",
+      "summary",
+      "highlights",
+      "injection_flags"
+    ],
+    "title": "LogAnalysis",
+    "type": "object"
+  },
+  "promptVersion": "log-analysis-agent/summarise@1",
+  "timeoutSeconds": 60,
+  "version": "1.0.0"
+}

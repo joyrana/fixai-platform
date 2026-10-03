@@ -24,9 +24,21 @@ asyncio_default_fixture_loop_scope = "function"
 addopts = "-q"
 
 [tool.ruff]
-line-length = 120
+line-length = 130
 target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "S", "ASYNC"]
 ignore = ["S101", "S311"]
+
+[tool.ruff.lint.flake8-bugbear]
+# pydantic Field() in MCP tool signatures declares schema constraints; it is not a mutable default.
+extend-immutable-calls = ["pydantic.Field"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["fixai_*"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test fixtures and labelled dataset tables read best as one record per line.
+"**/tests/**" = ["E501"]
+"evals/fixai_evals/datasets_build.py" = ["E501"]

@@ -6,8 +6,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from fixai_common.agent_service import AgentContext, AgentSpec, evidence_refs_in
 from fixai_common.agent_runtime import ToolCallFailed
+from fixai_common.agent_service import AgentContext, AgentSpec, evidence_refs_in
 from fixai_common.contracts import Citation, EvidenceRef, Fact, FailureCategory, Hypothesis
 from fixai_common.llm.base import LLMRequest
 from fixai_fix_agent.triage import REMEDIATION, Candidate, triage

@@ -37,8 +37,11 @@ async def run_suite(name: str, split: str, trials: int) -> list[dict]:
         "agent-regression": lambda: suites_extra.agent_regression(split, trials),
         "rag-quality": lambda: suites_extra.rag_quality(split),
         "safety": lambda: suites_extra.safety(),
-        "certification-agent": lambda: suites_extra.certification_agent_suite(split),
-        "knowledge-agent": lambda: suites_extra.knowledge_agent_suite(split),
+        "certification-agent": lambda: suites_extra.certification_agent_suite(split, trials),
+        "knowledge-agent": lambda: suites_extra.knowledge_agent_suite(split, trials),
+        "log-analysis-agent": lambda: suites_extra.log_analysis_agent_suite(split, trials),
+        "report-agent": lambda: suites_extra.report_agent_suite(split, trials),
+        "human-review-agent": lambda: suites_extra.human_review_agent_suite(split, trials),
         "workflow": lambda: suites_extra.workflow_suite(),
     }
     if name not in registry:
@@ -52,7 +55,8 @@ def summary(record: dict) -> str:
     metrics = record["metrics"]
     headline = metrics.get("task_success") or next(iter(metrics.values()), {})
     value = headline.get("value") if isinstance(headline, dict) else headline
-    return f"{record['suite']:<28} split={record['split']:<5} n={len(record['cases']):<4} success={value} provider={record['provider']}"
+    return (f"{record['suite']:<28} split={record['split']:<5} n={len(record['cases']):<4} success={value} "
+            f"provider={record['provider']}")
 
 
 def compare(baseline: dict, candidate: dict, tolerance: float) -> tuple[list[str], list[str]]:

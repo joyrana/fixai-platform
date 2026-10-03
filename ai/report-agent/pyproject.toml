@@ -1,0 +1,19 @@
+[project]
+name = "fixai-report-agent"
+version = "0.1.0"
+description = "Report agent: engine-verdict-preserving certification report drafts"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fixai-common"]
+
+[project.scripts]
+fixai-report-agent = "fixai_report_agent.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_report_agent"]

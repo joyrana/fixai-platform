@@ -39,6 +39,41 @@ jobs:
             backend/parent-pom/target/bom.json
           if-no-files-found: ignore
 
+  python:
+    name: AI layer (lint, tests, contracts, evaluation gates)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FIXAI_LLM_PROVIDER: offline
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install workspace (locked)
+        run: uv sync --all-packages --frozen
+      - name: Lint
+        run: uv run ruff check ai mcp evals
+      - name: Unit and integration tests
+        run: uv run pytest
+      - name: Tool and agent contracts are current
+        run: uv run python -m fixai_evals.contracts --check
+      - name: Evaluation gates (offline, deterministic)
+        run: |
+          uv run python -m fixai_evals.cli run --suite agent-smoke --min-success 1.0
+          uv run python -m fixai_evals.cli run --suite workflow --min-success 1.0
+          uv run python -m fixai_evals.cli run --suite safety --min-success 1.0
+          uv run python -m fixai_evals.cli run --suite rag-quality --split all --min-success 0.9
+          uv run python -m fixai_evals.cli run --suite agent-regression --split dev --min-success 1.0
+      - name: Upload evaluation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-reports
+          path: evals/reports/*.json
+          if-no-files-found: ignore
+
   dependency-review:
     name: Dependency review
     if: github.event_name == 'pull_request'

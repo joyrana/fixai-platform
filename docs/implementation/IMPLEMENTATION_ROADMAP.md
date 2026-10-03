@@ -10,11 +10,11 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 | M3 | Deterministic certification engine (scenarios, runner, evidence, replay, report) | M2 | done |
 | M4 | Broker persistence and FIX session configuration | M1 | done |
 | M5 | Workflow service: approvals and hash-chained audit | M1 | done |
-| M6 | Python AI foundations: shared contracts, telemetry, evaluation harness | M3 | planned |
-| M7 | Agent orchestrator (LangGraph) | M6 | planned |
-| M8 | Specialised agents, one at a time (FIX, certification, log-analysis, knowledge, report, human-review) | M7 | planned |
-| M9 | MCP servers with authorisation | M3–M5 | planned |
-| M10 | Knowledge ingestion and RAG evaluation (pgvector) | M6 | planned |
+| M6 | Python AI foundations: shared contracts, telemetry, evaluation harness | M3 | done |
+| M7 | Agent orchestrator (LangGraph) | M6 | done |
+| M8 | Specialised agents, one at a time (FIX, certification, log-analysis, knowledge, report, human-review) | M7 | done |
+| M9 | MCP servers with authorisation | M3–M5 | done |
+| M10 | Knowledge ingestion and RAG evaluation (in-process hybrid index; pgvector deferred, ADR-0007) | M6 | done |
 | M11 | React UI | M3–M5 | planned |
 | M12 | End-to-end integration, load tests, security hardening, OIDC | M4–M11 | planned |
 | M13 | Kubernetes and Helm | M12 | planned |
@@ -55,4 +55,4 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 - Testcontainers integration tests and full end-to-end runs against the in-process simulator.
 
 ### M4–M13
-See the brief in the repository root history. Each milestone appends a completion report to `docs/implementation/milestones/`.
+Each milestone appends a completion report to `docs/implementation/milestones/`. M6–M10 are reported together in `M6-M10-ai-layer.md`.

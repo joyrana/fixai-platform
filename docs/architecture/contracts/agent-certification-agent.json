@@ -1,0 +1,218 @@
+{
+  "agent": "certification-agent",
+  "allowedTools": [
+    "list_test_scenarios",
+    "start_simulated_certification",
+    "validate_test_plan"
+  ],
+  "callerRoles": [
+    "ADMIN",
+    "AI_AGENT",
+    "CERTIFICATION_ENGINEER",
+    "SERVICE"
+  ],
+  "input": {
+    "properties": {
+      "fix_version": {
+        "enum": [
+          "FIX42",
+          "FIX44",
+          "FIX50SP2"
+        ],
+        "title": "Fix Version",
+        "type": "string"
+      },
+      "idempotency_key": {
+        "anyOf": [
+          {
+            "pattern": "^[A-Za-z0-9._:-]{8,128}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Idempotency Key"
+      },
+      "objective": {
+        "maxLength": 1000,
+        "minLength": 3,
+        "title": "Objective",
+        "type": "string"
+      },
+      "simulator_profile": {
+        "default": "COMPLIANT",
+        "pattern": "^[A-Z_]{1,64}$",
+        "title": "Simulator Profile",
+        "type": "string"
+      },
+      "start": {
+        "default": false,
+        "title": "Start",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "fix_version",
+      "objective"
+    ],
+    "title": "PlanRequest",
+    "type": "object"
+  },
+  "maxToolCalls": 6,
+  "output": {
+    "$defs": {
+      "PlanValidationView": {
+        "properties": {
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid",
+          "problems"
+        ],
+        "title": "PlanValidationView",
+        "type": "object"
+      },
+      "StartedRun": {
+        "properties": {
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "simulator_profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Simulator Profile"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_type": {
+            "title": "Target Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status",
+          "target_type",
+          "simulator_profile"
+        ],
+        "title": "StartedRun",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "abstain_reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Abstain Reason"
+      },
+      "abstained": {
+        "default": false,
+        "title": "Abstained",
+        "type": "boolean"
+      },
+      "fix_version": {
+        "title": "Fix Version",
+        "type": "string"
+      },
+      "matched_topics": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Matched Topics",
+        "type": "array"
+      },
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      },
+      "run": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/StartedRun"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "scenario_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Scenario Ids",
+        "type": "array"
+      },
+      "suite_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Suite Id"
+      },
+      "validation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PlanValidationView"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "warnings": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Warnings",
+        "type": "array"
+      }
+    },
+    "required": [
+      "fix_version",
+      "suite_id",
+      "scenario_ids",
+      "matched_topics",
+      "rationale",
+      "validation",
+      "warnings"
+    ],
+    "title": "TestPlan",
+    "type": "object"
+  },
+  "promptVersion": "certification-agent/plan@1",
+  "timeoutSeconds": 60,
+  "version": "1.0.0"
+}

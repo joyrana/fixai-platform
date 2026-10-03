@@ -14,11 +14,16 @@ from dataclasses import dataclass
 MAX_UNTRUSTED_CHARS = 20_000
 
 _INJECTION_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
-    ("override_instructions", re.compile(r"\b(ignore|disregard|forget)\b.{0,40}\b(previous|prior|above|all|system)\b.{0,20}\b(instructions?|prompts?|rules?)", re.I | re.S)),
+    ("override_instructions", re.compile(r"\b(ignore|disregard|forget)\b.{0,40}\b(previous|prior|above|all|system)\b"
+                                         r".{0,20}\b(instructions?|prompts?|rules?)", re.I | re.S)),
     ("role_impersonation", re.compile(r"(^|\n)\s*(system|assistant|developer)\s*:", re.I)),
-    ("tool_coercion", re.compile(r"\b(call|invoke|run|execute|use)\b.{0,30}\b(tool|function|command|approve|request_human_approval|start_simulated_certification)\b", re.I | re.S)),
-    ("verdict_tampering", re.compile(r"\b(mark|set|report|declare)\b.{0,40}\b(certification|verdict|test|scenario)s?\b.{0,30}\b(pass(ed)?|success(ful)?|approved)\b", re.I | re.S)),
-    ("secret_exfiltration", re.compile(r"\b(reveal|print|show|send|exfiltrate|leak)\b.{0,40}\b(api[_ -]?key|password|secret|token|credential|system prompt)", re.I | re.S)),
+    ("tool_coercion", re.compile(r"\b(call|invoke|run|execute|use)\b"
+                                 r".{0,30}\b(tool|function|command|approve|request_human_approval"
+                                 r"|start_simulated_certification)\b", re.I | re.S)),
+    ("verdict_tampering", re.compile(r"\b(mark|set|report|declare)\b.{0,40}\b(certification|verdict|test|scenario)s?\b"
+                                     r".{0,30}\b(pass(ed)?|success(ful)?|approved)\b", re.I | re.S)),
+    ("secret_exfiltration", re.compile(r"\b(reveal|print|show|send|exfiltrate|leak)\b"
+                                       r".{0,40}\b(api[_ -]?key|password|secret|token|credential|system prompt)", re.I | re.S)),
     ("markup_escape", re.compile(r"</?\s*(untrusted|facts|system|instructions)\b", re.I)),
 ]
 

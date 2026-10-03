@@ -109,7 +109,8 @@ async def inspect_service_health(ctx: Context) -> HealthReport:
 
 
 @server.tool(description="Sanitized session log lines (FIX engine events and session messages) for one scenario "
-             "execution, with prompt-injection flags. " + ToolPolicy("retrieve_sanitized_logs", Capability.READ, READERS).describe())
+             "execution, with prompt-injection flags. "
+             + ToolPolicy("retrieve_sanitized_logs", Capability.READ, READERS).describe())
 @governed_tool(registry, ToolPolicy("retrieve_sanitized_logs", Capability.READ, READERS))
 async def retrieve_sanitized_logs(ctx: Context, run_id: str = Field(pattern=UUID), execution_id: str = Field(pattern=UUID),
                                   max_lines: int = Field(default=200, ge=1, le=1000)) -> SanitizedLogs:

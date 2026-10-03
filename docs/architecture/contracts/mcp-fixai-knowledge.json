@@ -1,0 +1,333 @@
+{
+  "server": "fixai-knowledge",
+  "tools": [
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Verify that each cited quote appears in the cited chunk and that the caller may read it. Use before presenting an answer that cites documentation. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,REVIEWER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "$defs": {
+          "CitationIn": {
+            "properties": {
+              "chunk_id": {
+                "maxLength": 200,
+                "title": "Chunk Id",
+                "type": "string"
+              },
+              "quote": {
+                "maxLength": 1200,
+                "minLength": 1,
+                "title": "Quote",
+                "type": "string"
+              }
+            },
+            "required": [
+              "chunk_id",
+              "quote"
+            ],
+            "title": "CitationIn",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/CitationIn"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "citations"
+        ],
+        "title": "inspect_citationsArguments",
+        "type": "object"
+      },
+      "name": "inspect_citations",
+      "outputSchema": {
+        "$defs": {
+          "CitationCheck": {
+            "properties": {
+              "accessible": {
+                "title": "Accessible",
+                "type": "boolean"
+              },
+              "chunk_id": {
+                "title": "Chunk Id",
+                "type": "string"
+              },
+              "exists": {
+                "title": "Exists",
+                "type": "boolean"
+              },
+              "quote_found": {
+                "title": "Quote Found",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "chunk_id",
+              "exists",
+              "accessible",
+              "quote_found"
+            ],
+            "title": "CitationCheck",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "all_supported": {
+            "title": "All Supported",
+            "type": "boolean"
+          },
+          "checks": {
+            "items": {
+              "$ref": "#/$defs/CitationCheck"
+            },
+            "title": "Checks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "all_supported",
+          "checks"
+        ],
+        "title": "CitationReport",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "REVIEWER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Retrieve one approved document by ID (if the caller may read it). [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,REVIEWER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "doc_id": {
+            "pattern": "^[A-Z0-9-]{3,64}$",
+            "title": "Doc Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "doc_id"
+        ],
+        "title": "retrieve_documentArguments",
+        "type": "object"
+      },
+      "name": "retrieve_document",
+      "outputSchema": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "doc_id": {
+            "title": "Doc Id",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "doc_id",
+          "title",
+          "version",
+          "tags",
+          "sha256",
+          "body"
+        ],
+        "title": "DocumentView",
+        "type": "object"
+      },
+      "ratePerMinute": 60,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "REVIEWER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    },
+    {
+      "allowedAgents": null,
+      "capability": "READ",
+      "description": "Hybrid (lexical + vector) search over approved FIX and platform documentation, filtered by the caller's access. Returns passages with citation spans. [capability=READ roles=ADMIN,AI_AGENT,AUDITOR,BROKER_MANAGER,CERTIFICATION_ENGINEER,REVIEWER,SERVICE agents=any agent timeout=15s idempotent=True]",
+      "idempotent": true,
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Query",
+            "type": "string"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          },
+          "top_k": {
+            "default": 5,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Top K",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search_fix_documentationArguments",
+        "type": "object"
+      },
+      "name": "search_fix_documentation",
+      "outputSchema": {
+        "$defs": {
+          "Passage": {
+            "properties": {
+              "chunk_id": {
+                "title": "Chunk Id",
+                "type": "string"
+              },
+              "doc_id": {
+                "title": "Doc Id",
+                "type": "string"
+              },
+              "end": {
+                "title": "End",
+                "type": "integer"
+              },
+              "injection_flags": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Injection Flags",
+                "type": "array"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              },
+              "section": {
+                "title": "Section",
+                "type": "string"
+              },
+              "start": {
+                "title": "Start",
+                "type": "integer"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              }
+            },
+            "required": [
+              "doc_id",
+              "chunk_id",
+              "title",
+              "section",
+              "text",
+              "start",
+              "end",
+              "score",
+              "injection_flags"
+            ],
+            "title": "Passage",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "chunking": {
+            "title": "Chunking",
+            "type": "string"
+          },
+          "embedding_model": {
+            "title": "Embedding Model",
+            "type": "string"
+          },
+          "passages": {
+            "items": {
+              "$ref": "#/$defs/Passage"
+            },
+            "title": "Passages",
+            "type": "array"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "embedding_model",
+          "chunking",
+          "passages"
+        ],
+        "title": "SearchResult",
+        "type": "object"
+      },
+      "ratePerMinute": 120,
+      "roles": [
+        "ADMIN",
+        "AI_AGENT",
+        "AUDITOR",
+        "BROKER_MANAGER",
+        "CERTIFICATION_ENGINEER",
+        "REVIEWER",
+        "SERVICE"
+      ],
+      "timeoutSeconds": 15.0
+    }
+  ],
+  "version": "1.0.0"
+}

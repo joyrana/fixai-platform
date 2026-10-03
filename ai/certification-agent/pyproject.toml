@@ -1,0 +1,19 @@
+[project]
+name = "fixai-certification-agent"
+version = "0.1.0"
+description = "Certification planning agent: maps objectives to validated, simulator-only test plans"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fixai-common"]
+
+[project.scripts]
+fixai-certification-agent = "fixai_certification_agent.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_certification_agent"]

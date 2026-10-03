@@ -58,7 +58,8 @@ def triage(scenario: dict[str, Any]) -> list[Candidate]:
             if tag in ("36", "123"):
                 candidates.append(Candidate(FailureCategory.SEQUENCE_RECOVERY_FAILURE, "high",
                                             f"Sequence reset rejected ({name})",
-                                            f"The platform rejected a counterparty SequenceReset because {name} was invalid: {actual}.",
+                                            f"The platform rejected a counterparty SequenceReset because {name} was invalid: "
+                                            f"{actual}.",
                                             refs, "SequenceReset GapFillFlag NewSeqNo resend"))
             elif reason == "1":
                 candidates.append(Candidate(FailureCategory.MISSING_REQUIRED_FIELD, "high", f"Required field {name} missing",
@@ -116,7 +117,8 @@ def triage(scenario: dict[str, Any]) -> list[Candidate]:
                              and _field_value(e.get("raw_redacted"), "150") in ("0", "4", "5") for e in inbound):
             hit = next(e for e in inbound if _field_value(e.get("raw_redacted"), "11") == clordid.group(1).strip())
             candidates.append(Candidate(FailureCategory.UNEXPECTED_ACCEPTANCE, "high", "Request acknowledged instead of rejected",
-                                        f"No {msg_type} was received; instead an ExecutionReport acknowledged {clordid.group(1)}.",
+                                        f"No {msg_type} was received; instead an ExecutionReport acknowledged "
+                                        f"{clordid.group(1)}.",
                                         [hit["ref"]], "cancel unknown order must be rejected OrderCancelReject"))
         else:
             # A late response must correlate with the request (same ClOrdID when the expectation had one).
@@ -127,7 +129,8 @@ def triage(scenario: dict[str, Any]) -> list[Candidate]:
                                         "Response arrived late" if later else f"No {msg_type} response",
                                         f"The expected {msg_type} did not arrive within {missing.group(3)} ms.",
                                         [later[-1]["ref"]] if later else [fallback_ref],
-                                        "response time acknowledgement timeout" if later else "missing response timeout acknowledgement"))
+                                        "response time acknowledgement timeout" if later
+                                        else "missing response timeout acknowledgement"))
     elif fallback_ref and ("Logon did not complete" in summary or "No response from counterparty" in summary):
         candidates.append(Candidate(FailureCategory.CONNECTIVITY, "medium", "Logon not completed", summary, [fallback_ref],
                                     "Logon never answered host port"))
@@ -156,15 +159,19 @@ REMEDIATION = {
                                              "Re-run the affected scenarios and confirm no platform Reject is generated."],
     FailureCategory.INCORRECT_FIELD_VALUE: ["Correct the value mapping for the field for this FIX version.",
                                             "Check version-specific enumerations (e.g. ExecType F vs 1/2)."],
-    FailureCategory.QUANTITY_INCONSISTENCY: ["Update CumQty and LeavesQty atomically on every fill so CumQty + LeavesQty = OrderQty."],
+    FailureCategory.QUANTITY_INCONSISTENCY: [
+        "Update CumQty and LeavesQty atomically on every fill so CumQty + LeavesQty = OrderQty."],
     FailureCategory.DUPLICATE_IDENTIFIER: ["Generate a new unique identifier for every report or order; never reuse it."],
     FailureCategory.MISSING_RESPONSE: ["Ensure every request type in scope produces a response or an explicit reject.",
                                        "Check gateway logs for dropped or unrouted messages."],
-    FailureCategory.UNEXPECTED_ACCEPTANCE: ["Validate the request against order state and identifiers before acknowledging; reject when invalid."],
+    FailureCategory.UNEXPECTED_ACCEPTANCE: [
+        "Validate the request against order state and identifiers before acknowledging; reject when invalid."],
     FailureCategory.UNEXPECTED_REJECTION: ["Check trading permissions, account set-up and kill switches for the session.",
                                            "Read the reject Text for the stated reason."],
-    FailureCategory.SESSION_PROTOCOL_VIOLATION: ["Use the FIX engine's standard session handling; do not rebuild administrative messages."],
-    FailureCategory.SEQUENCE_RECOVERY_FAILURE: ["Answer ResendRequest with SequenceReset GapFillFlag=Y for administrative messages and PossDupFlag=Y resends."],
+    FailureCategory.SESSION_PROTOCOL_VIOLATION: [
+        "Use the FIX engine's standard session handling; do not rebuild administrative messages."],
+    FailureCategory.SEQUENCE_RECOVERY_FAILURE: [
+        "Answer ResendRequest with SequenceReset GapFillFlag=Y for administrative messages and PossDupFlag=Y resends."],
     FailureCategory.LATENCY_SLA_BREACH: ["Profile the order path; look for queuing or throttling before the acknowledgement."],
     FailureCategory.CONNECTIVITY: ["Verify host, port, TLS expectations and CompIDs against the onboarding record."],
     FailureCategory.UNKNOWN: ["Review the cited evidence manually."],

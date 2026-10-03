@@ -25,8 +25,8 @@ from fixai_common.http_service import create_app, require_roles
 from fixai_common.identity import ServiceIdentity, current_correlation_id
 from fixai_common.llm.base import LLMProvider, LLMRefusal, LLMRequest, Synthesizer, provider_from_env
 
-I = TypeVar("I", bound=BaseModel)
-O = TypeVar("O", bound=BaseModel)
+In = TypeVar("In", bound=BaseModel)
+Out = TypeVar("Out", bound=BaseModel)
 
 # Tool name -> MCP server environment variable holding its URL.
 TOOL_SERVERS = {
@@ -94,14 +94,14 @@ class AgentContext:
 
 
 @dataclass
-class AgentSpec(Generic[I, O]):
+class AgentSpec(Generic[In, Out]):
     name: str
     version: str
     prompt_version: str
-    input_model: type[I]
-    output_model: type[O]
+    input_model: type[In]
+    output_model: type[Out]
     allowlist: frozenset[str]
-    run: Callable[[I, AgentContext], Awaitable[O]]
+    run: Callable[[In, AgentContext], Awaitable[Out]]
     synthesizers: dict[str, Synthesizer]
     caller_roles: frozenset[str] = frozenset({"AI_AGENT", "SERVICE", "CERTIFICATION_ENGINEER", "ADMIN"})
     max_tool_calls: int = 20
@@ -109,8 +109,8 @@ class AgentSpec(Generic[I, O]):
     description: str = ""
 
 
-async def invoke(spec: AgentSpec[I, O], payload: I, servers: dict[str, MCPServer | str] | None = None,
-                 llm: LLMProvider | None = None) -> AgentResult[O]:
+async def invoke(spec: AgentSpec[In, Out], payload: In, servers: dict[str, MCPServer | str] | None = None,
+                 llm: LLMProvider | None = None) -> AgentResult[Out]:
     """Runs one agent invocation within its tool budget and wall-clock timeout."""
     started = time.perf_counter()
     gateway = ToolGateway(agent=spec.name, servers=servers if servers is not None else servers_from_env(spec.allowlist),
@@ -123,7 +123,8 @@ async def invoke(spec: AgentSpec[I, O], payload: I, servers: dict[str, MCPServer
         with anyio.fail_after(spec.timeout_seconds):
             output = await spec.run(payload, context)
     if gateway.injection_findings:
-        context.note(f"untrusted tool output contained instruction-like text ({len(gateway.injection_findings)} findings); treated as data")
+        context.note(f"untrusted tool output contained instruction-like text ({len(gateway.injection_findings)} "
+                     "findings); treated as data")
     metadata = AgentRunMetadata(
         agent=spec.name, agent_version=spec.version, prompt_version=spec.prompt_version, provider=provider.name,
         model=provider.model, correlation_id=current_correlation_id.get() or "", input_tokens=int(context.usage["input"]),
@@ -134,13 +135,13 @@ async def invoke(spec: AgentSpec[I, O], payload: I, servers: dict[str, MCPServer
     return AgentResult[spec.output_model](output=output, metadata=metadata)  # type: ignore[name-defined]
 
 
-def create_agent_app(spec: AgentSpec[I, O], servers: dict[str, MCPServer | str] | None = None,
+def create_agent_app(spec: AgentSpec[In, Out], servers: dict[str, MCPServer | str] | None = None,
                      llm: LLMProvider | None = None) -> FastAPI:
     app = create_app(spec.name, spec.version)
     input_model, output_model = spec.input_model, spec.output_model
 
     @app.post("/v1/invoke", response_model=AgentResult[output_model], summary=spec.description or spec.name)  # type: ignore[valid-type]
-    async def invoke_endpoint(payload: input_model) -> AgentResult[O]:  # type: ignore[valid-type]
+    async def invoke_endpoint(payload: input_model) -> AgentResult[Out]:  # type: ignore[valid-type]
         require_roles(*spec.caller_roles)
         try:
             return await invoke(spec, payload, servers, llm)
