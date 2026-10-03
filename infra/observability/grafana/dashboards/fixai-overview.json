@@ -27,7 +27,8 @@
    },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "decimals": 0
     },
     "overrides": []
    },
@@ -41,7 +42,7 @@
    "targets": [
     {
      "refId": "A",
-     "expr": "sum(increase(fixai_certification_run_duration_seconds_count[24h]))"
+     "expr": "round(sum(increase(fixai_certification_run_duration_seconds_count[24h])))"
     }
    ],
    "id": 1

@@ -107,6 +107,31 @@ sequenceDiagram
 - **Time:** UTC `Instant` everywhere; FIX `SendingTime` is excluded from deterministic comparisons.
 - **Redaction:** tags 553, 554, 925, 96 and 95, plus any tag configured as sensitive, are replaced with `***` before logging or persistence. Integrity is preserved through SHA-256 of the original message.
 
-## 6. Deployment topology (local)
+## 6. Deployment topology
 
-`docker compose -f infra/docker/docker-compose.yml up` starts PostgreSQL, the simulator and the Java services. The AI services and UI are added as their milestones land. Kubernetes/Helm come after the local stack is stable (roadmap M13).
+**Local** (`infra/docker/docker-compose.yml`):
+- No profile: PostgreSQL only, so services can run from the IDE.
+- `--profile platform`: the full stack behind the UI gateway on `127.0.0.1:3000`.
+- `--profile observability`: adds Prometheus (`:9090`, with alert rules) and Grafana (`:3001`, with a provisioned dashboard).
+
+Security is off locally (dev identity headers), and every port is bound to loopback.
+
+**Kubernetes** (`infra/helm/fixai-platform`):
+- OIDC is on by default, and the chart refuses to render without an issuer.
+- PostgreSQL is external; database, OIDC client, service token and LLM key secrets are referenced by name.
+- Every pod is hardened: non-root, read-only root filesystem, all capabilities dropped, seccomp RuntimeDefault, probes and limits.
+- Default-deny NetworkPolicies open only these paths:
+  - ingress controller → UI;
+  - UI → platform services and the orchestrator;
+  - orchestrator → MCP servers → platform services;
+  - platform services → database, simulator and, opt-in, broker CIDRs.
+- The AI tiers (agents and MCP servers) have no network route to broker endpoints.
+
+```
+browser ─► UI gateway (nginx) ─┬─► certification-service ─► fix-simulator / approved broker TEST|UAT (FIX)
+                               ├─► broker-service            │
+                               ├─► workflow-service ◄────────┘ (approval consume, audit)
+                               └─► agent-orchestrator ─► MCP servers ─► platform services (read / simulated-write)
+```
+
+Security controls are summarised in [SECURITY.md](SECURITY.md).

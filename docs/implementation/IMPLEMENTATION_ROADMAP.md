@@ -15,9 +15,9 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 | M8 | Specialised agents, one at a time (FIX, certification, log-analysis, knowledge, report, human-review) | M7 | done |
 | M9 | MCP servers with authorisation | M3–M5 | done |
 | M10 | Knowledge ingestion and RAG evaluation (in-process hybrid index; pgvector deferred, ADR-0007) | M6 | done |
-| M11 | React UI | M3–M5 | planned |
-| M12 | End-to-end integration, load tests, security hardening, OIDC | M4–M11 | planned |
-| M13 | Kubernetes and Helm | M12 | planned |
+| M11 | React UI | M3–M5 | done |
+| M12 | End-to-end integration, load tests, security hardening, OIDC | M4–M11 | done (OIDC E2E pending, see M11–M13 report) |
+| M13 | Kubernetes and Helm | M12 | done (rendered and linted; cluster deployment pending) |
 
 ## Module decisions
 
@@ -55,4 +55,4 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 - Testcontainers integration tests and full end-to-end runs against the in-process simulator.
 
 ### M4–M13
-Each milestone appends a completion report to `docs/implementation/milestones/`. M6–M10 are reported together in `M6-M10-ai-layer.md`.
+Each milestone appends a completion report to `docs/implementation/milestones/`. M6–M10 are reported together in `M6-M10-ai-layer.md`, and M11–M13 in `M11-M13-ui-deployment.md`.

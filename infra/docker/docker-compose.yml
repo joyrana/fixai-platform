@@ -207,6 +207,7 @@ services:
     image: grafana/grafana:12.0.0
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me-local-only}
+      GF_SERVER_ROOT_URL: http://localhost:${GRAFANA_PORT:-3001}/
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/fixai-overview.json
@@ -215,7 +216,7 @@ services:
       - ../observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on: [prometheus]
     ports:
-      - "127.0.0.1:3001:3000"
+      - "127.0.0.1:${GRAFANA_PORT:-3001}:3000"
 
 volumes:
   postgres-data:
