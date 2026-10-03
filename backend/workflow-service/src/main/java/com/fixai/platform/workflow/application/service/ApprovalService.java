@@ -71,7 +71,7 @@ public class ApprovalService {
                 command.justification().strip(), requester, actor.type().name(),
                 policy.riskFor(command.payload(), command.requestedRisk()), command.evidenceRefs(), command.traceIds(),
                 ApprovalStatus.PENDING, ApprovalPolicy.VERSION, now.plus(ttl), now, null, null, null, null, null,
-                correlationId);
+                correlationId, requester.equals(actor.id()) ? null : actor.id());
         approvals.insert(request, idempotencyKey);
         audit.append(requester, actor.type().name(), actor.id(), "APPROVAL_REQUESTED", "approval", request.id().toString(),
                 correlationId, "PENDING", details(request));
@@ -187,9 +187,13 @@ public class ApprovalService {
         return approvals.find(id).orElseThrow(() -> new WorkflowExceptions.NotFound("Approval request", id));
     }
 
-    /** Services may file requests on behalf of the user who triggered them; users always file as themselves. */
+    /**
+     * Services and agents may file requests on behalf of the person who triggered them, so that person is the requester
+     * for four-eyes purposes (they cannot approve their own AI-assisted request). The filing identity is recorded in the
+     * audit log as recordedBy and as requesterType. Users always file as themselves.
+     */
     private static String requester(CreateCommand command, Actor actor) {
-        if (actor.type() == Actor.Type.SERVICE && command.onBehalfOf() != null && !command.onBehalfOf().isBlank()) {
+        if (actor.type() != Actor.Type.USER && command.onBehalfOf() != null && !command.onBehalfOf().isBlank()) {
             return command.onBehalfOf();
         }
         return actor.id();
@@ -200,7 +204,7 @@ public class ApprovalService {
     }
 
     private static boolean canRead(ApprovalRequest request, Actor actor) {
-        return readsAll(actor) || actor.id().equals(request.requestedBy());
+        return readsAll(actor) || request.isOwnedBy(actor.id());
     }
 
     private static List<String> codes(List<ApprovalPolicy.Rejection> problems) {

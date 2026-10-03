@@ -55,13 +55,13 @@ public final class WorkflowDtos {
             String payloadHash, String justification, String requestedBy, String requesterType, String riskLevel,
             List<String> evidenceRefs, List<String> traceIds, String status, String policyVersion, Instant expiresAt,
             Instant createdAt, String decidedBy, Instant decidedAt, String decisionRationale, String consumedBy,
-            Instant consumedAt, String correlationId) {
+            Instant consumedAt, String correlationId, String filedBy) {
         static ApprovalResponse of(ApprovalRequest r) {
             return new ApprovalResponse(r.id(), r.payload().action(), r.payload().targetType(), r.payload().targetId(),
                     r.payload().environment(), r.payload().arguments(), r.payloadHash(), r.justification(), r.requestedBy(),
                     r.requesterType(), r.riskLevel().name(), r.evidenceRefs(), r.traceIds(), r.status().name(),
                     r.policyVersion(), r.expiresAt(), r.createdAt(), r.decidedBy(), r.decidedAt(), r.decisionRationale(),
-                    r.consumedBy(), r.consumedAt(), r.correlationId());
+                    r.consumedBy(), r.consumedAt(), r.correlationId(), r.filedBy());
         }
     }
 

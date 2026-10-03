@@ -37,10 +37,10 @@ public class JdbcApprovalRepository implements ApprovalRepository {
         jdbc.sql("""
                 INSERT INTO approval_request (id, action, target_type, target_id, environment, arguments, payload_hash,
                     justification, requested_by, requester_type, risk_level, evidence_refs, trace_ids, status, policy_version,
-                    expires_at, created_at, correlation_id, idempotency_key)
+                    expires_at, created_at, correlation_id, idempotency_key, filed_by)
                 VALUES (:id, :action, :targetType, :targetId, :environment, CAST(:arguments AS JSONB), :hash, :justification,
                     :requestedBy, :requesterType, :risk, CAST(:evidence AS JSONB), CAST(:traces AS JSONB), :status, :policy,
-                    :expiresAt, :createdAt, :correlationId, :idempotencyKey)
+                    :expiresAt, :createdAt, :correlationId, :idempotencyKey, :filedBy)
                 """)
                 .param("id", r.id())
                 .param("action", r.payload().action())
@@ -61,6 +61,7 @@ public class JdbcApprovalRepository implements ApprovalRepository {
                 .param("createdAt", Timestamp.from(r.createdAt()))
                 .param("correlationId", r.correlationId())
                 .param("idempotencyKey", idempotencyKey)
+                .param("filedBy", r.filedBy())
                 .update();
     }
 
@@ -80,7 +81,7 @@ public class JdbcApprovalRepository implements ApprovalRepository {
         return jdbc.sql("""
                 SELECT * FROM approval_request
                 WHERE (CAST(:status AS VARCHAR) IS NULL OR status = :status)
-                  AND (CAST(:by AS VARCHAR) IS NULL OR requested_by = :by)
+                  AND (CAST(:by AS VARCHAR) IS NULL OR requested_by = :by OR filed_by = :by)
                 ORDER BY created_at DESC LIMIT :limit OFFSET :offset
                 """)
                 .param("status", status == null ? null : status.name())
@@ -95,7 +96,7 @@ public class JdbcApprovalRepository implements ApprovalRepository {
         return jdbc.sql("""
                 SELECT COUNT(*) FROM approval_request
                 WHERE (CAST(:status AS VARCHAR) IS NULL OR status = :status)
-                  AND (CAST(:by AS VARCHAR) IS NULL OR requested_by = :by)
+                  AND (CAST(:by AS VARCHAR) IS NULL OR requested_by = :by OR filed_by = :by)
                 """)
                 .param("status", status == null ? null : status.name())
                 .param("by", requestedBy)
@@ -179,7 +180,8 @@ public class JdbcApprovalRepository implements ApprovalRepository {
                 rs.getString("decision_rationale"),
                 rs.getString("consumed_by"),
                 instant(rs, "consumed_at"),
-                rs.getString("correlation_id"));
+                rs.getString("correlation_id"),
+                rs.getString("filed_by"));
     }
 
     private static Instant instant(ResultSet rs, String column) throws SQLException {

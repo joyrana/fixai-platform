@@ -76,7 +76,7 @@ public final class ApprovalPolicy {
         if (!reviewerRoles.contains("REVIEWER") && !reviewerRoles.contains("ADMIN")) {
             return Optional.of(new Rejection("NOT_A_REVIEWER", "Only reviewers may decide approval requests"));
         }
-        if (reviewer.equals(request.requestedBy())) {
+        if (reviewer.equals(request.requestedBy()) || reviewer.equals(request.filedBy())) {
             return Optional.of(new Rejection("FOUR_EYES", "Requesters cannot decide their own approval requests"));
         }
         if (rationale == null || rationale.strip().length() < 10) {

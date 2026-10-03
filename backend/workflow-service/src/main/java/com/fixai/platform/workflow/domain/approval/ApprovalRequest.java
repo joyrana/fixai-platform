@@ -24,11 +24,17 @@ public record ApprovalRequest(
         String decisionRationale,
         String consumedBy,
         Instant consumedAt,
-        String correlationId) {
+        String correlationId,
+        String filedBy) {
 
     public ApprovalRequest {
         evidenceRefs = evidenceRefs == null ? List.of() : List.copyOf(evidenceRefs);
         traceIds = traceIds == null ? List.of() : List.copyOf(traceIds);
+    }
+
+    /** True for the requester and for the service or agent identity that filed the request on their behalf. */
+    public boolean isOwnedBy(String actorId) {
+        return actorId.equals(requestedBy) || actorId.equals(filedBy);
     }
 
     public boolean isExpiredAt(Instant now) {

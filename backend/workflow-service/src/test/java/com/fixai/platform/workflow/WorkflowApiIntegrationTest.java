@@ -95,6 +95,26 @@ class WorkflowApiIntegrationTest {
     }
 
     @Test
+    void agentFiledRequestsCountTheInitiatingPersonAsRequester() {
+        Map<String, Object> body = new HashMap<>(payload("cfg-agent", "TEST", 9880));
+        body.put("onBehalfOf", "alice");
+        Map<String, Object> created = create("operations-mcp", "AI_AGENT", body, null).getBody();
+        assertThat(created).containsEntry("requestedBy", "alice").containsEntry("requesterType", "AGENT")
+                .containsEntry("filedBy", "operations-mcp");
+        String id = (String) created.get("id");
+        // The filing agent can follow the request it filed; other agents cannot see it.
+        assertThat(get("/api/v1/approvals/" + id, "operations-mcp", "AI_AGENT").getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(get("/api/v1/approvals/" + id, "other-agent", "AI_AGENT").getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        ResponseEntity<Map<String, Object>> self = decide(id, "alice", "REVIEWER", "APPROVE");
+        assertThat((List<Object>) self.getBody().get("codes")).containsExactly("FOUR_EYES");
+        assertThat(decide(id, "bob", "REVIEWER", "APPROVE").getBody()).containsEntry("status", "APPROVED");
+
+        Map<String, Object> userBody = new HashMap<>(payload("cfg-user", "TEST", 9880));
+        userBody.put("onBehalfOf", "mallory");
+        assertThat(create("alice", "BROKER_MANAGER", userBody, null).getBody()).containsEntry("requestedBy", "alice");
+    }
+
+    @Test
     void policyBlocksProductionUnknownActionsAndWeakJustification() {
         ResponseEntity<Map<String, Object>> production = create("alice", "BROKER_MANAGER", payload("cfg-2", "PRODUCTION", 1), null);
         assertThat(production.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
