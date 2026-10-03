@@ -27,3 +27,6 @@ __pycache__/
 .ruff_cache/
 # Evaluation run outputs (regenerate with python -m fixai_evals.cli)
 evals/reports/*.json
+
+# Local environment overrides (may hold API keys)
+.env
