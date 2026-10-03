@@ -29,6 +29,8 @@
     </properties>
 
     <modules>
+        <module>../fix-core</module>
+        <module>../fix-simulator</module>
         <module>../fix-gateway</module>
         <module>../broker-service</module>
         <module>../certification-service</module>

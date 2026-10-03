@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: fix-simulator
+
+server:
+  port: ${SERVER_PORT:8085}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+fixai:
+  simulator:
+    fix-port: ${FIX_SIMULATOR_PORT:9880}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
