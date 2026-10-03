@@ -28,13 +28,30 @@ Built with Java 21, Spring Boot 3.5, QuickFIX/J, PostgreSQL and Flyway; Python, 
 
 ## Quick start
 
+Prerequisites: Java 21, Maven 3.9+, Docker with Compose v2, Node.js 22. `setup.sh` installs `uv` if it is missing.
+
 ```bash
-# Whole platform: UI on http://localhost:3000 (dev identity switcher in the sidebar)
-mvn -B package -DskipTests
-docker compose -f infra/docker/docker-compose.yml --profile platform up -d --build --wait
-# ...plus Prometheus (:9090) and Grafana (:3001)
-docker compose -f infra/docker/docker-compose.yml --profile platform --profile observability up -d --wait
-FIXAI_E2E_BASE_URL=http://localhost:3000 uv run pytest e2e          # cross-service journeys
+./setup.sh      # install all packages (Maven, uv, npm) and build every container image; --with-tests also runs the test suites
+./start.sh      # run the entire platform and wait until it is healthy; --no-observability skips Prometheus/Grafana
+./stop.sh       # stop everything (data kept); ./stop.sh --clean also deletes the data volumes
+```
+
+After `./start.sh`:
+
+| Service | URL |
+|---|---|
+| UI | http://localhost:3000 (pick a role in the sidebar's dev identity panel) |
+| Orchestrator API | http://localhost:8100/docs |
+| Certification API | http://localhost:8083/swagger-ui.html |
+| Grafana | http://localhost:3001 |
+| Prometheus | http://localhost:9090 |
+
+The stack is local only: security is off (development identity headers) and every port is bound to 127.0.0.1. Behind a TLS-intercepting corporate proxy, run `CORP_CA_FILE=/path/to/ca.pem ./setup.sh`. The CA is passed to image builds as a build secret and is never stored in an image.
+
+With the platform running:
+
+```bash
+FIXAI_E2E_BASE_URL=http://localhost:3000 uv run pytest e2e               # cross-service journeys
 (cd frontend && FIXAI_UI_URL=http://localhost:3000 npx playwright test)  # browser smoke
 uv run python -m fixai_evals.cli benchmark --suite certification-throughput --run-suite full-certification --concurrency 4 --runs 8
 ```
