@@ -154,6 +154,14 @@ class BrokerServiceIntegrationTest {
                 config("FIXAI-ROLE2", 9876), "BROKER_MANAGER");
         assertThat(suspended.getBody().get("codes")).asList().containsExactly("BROKER_NOT_ACTIVE");
 
+        assertThat(send(HttpMethod.POST, "/api/v1/brokers",
+                Map.of("brokerCode", "BRK-AUD", "name", "Audit", "endpoint", "fix://x", "status", "ACTIVE"), "AUDITOR")
+                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(send(HttpMethod.DELETE, "/api/v1/brokers/" + brokerId, null, "CERTIFICATION_ENGINEER").getStatusCode())
+                .isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(send(HttpMethod.PATCH, "/api/v1/brokers/" + brokerId + "/status/ACTIVE", null, "AI_AGENT").getStatusCode())
+                .isEqualTo(HttpStatus.FORBIDDEN);
+
         ResponseEntity<Map<String, Object>> duplicateBroker = send(HttpMethod.POST, "/api/v1/brokers",
                 Map.of("brokerCode", "brk-role", "name", "Dup", "endpoint", "fix://x", "status", "ACTIVE"), "ADMIN");
         assertThat(duplicateBroker.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);

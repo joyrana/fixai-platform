@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class BrokerController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','BROKER_MANAGER')")
     @Operation(summary = "Create a broker")
     public ResponseEntity<BrokerResponse> createBroker(@Valid @RequestBody BrokerRequest request) {
         Broker created = brokerManagementUseCase.createBroker(new CreateBrokerCommand(
@@ -62,6 +64,7 @@ public class BrokerController {
     }
 
     @PutMapping("/{brokerId}")
+    @PreAuthorize("hasAnyRole('ADMIN','BROKER_MANAGER')")
     @Operation(summary = "Update broker")
     public BrokerResponse updateBroker(@PathVariable UUID brokerId, @Valid @RequestBody BrokerRequest request) {
         Broker updated = brokerManagementUseCase.updateBroker(brokerId, new UpdateBrokerCommand(
@@ -72,6 +75,7 @@ public class BrokerController {
     }
 
     @PatchMapping("/{brokerId}/status/{status}")
+    @PreAuthorize("hasAnyRole('ADMIN','BROKER_MANAGER')")
     @Operation(summary = "Change broker status")
     public BrokerResponse changeStatus(
             @Parameter(description = "Broker id") @PathVariable UUID brokerId,
@@ -80,6 +84,7 @@ public class BrokerController {
     }
 
     @DeleteMapping("/{brokerId}")
+    @PreAuthorize("hasAnyRole('ADMIN','BROKER_MANAGER')")
     @Operation(summary = "Delete broker")
     public ResponseEntity<Void> deleteBroker(@PathVariable UUID brokerId) {
         brokerManagementUseCase.deleteBroker(brokerId);
