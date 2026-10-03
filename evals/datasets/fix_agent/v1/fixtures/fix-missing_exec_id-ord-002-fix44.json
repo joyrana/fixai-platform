@@ -1,0 +1,114 @@
+{
+ "run_id": "49f14a8e-058e-4f51-8219-0f6b0116d791",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=95|35=A|34=1|49=FX49f14a8e05-01|52=20261003-11:56:26.398|56=SIM-MISSING_EXEC_ID|98=0|108=30|141=Y|10=159|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=95|35=A|34=1|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.402|56=FX49f14a8e05-01|98=0|108=30|141=Y|10=145|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=154|35=D|34=2|49=FX49f14a8e05-01|52=20261003-11:56:26.405|56=SIM-MISSING_EXEC_ID|11=FX49f14a8e05-01-o1|21=1|38=100|40=1|54=2|55=MSFT|60=20261003-11:56:26.405|10=027|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=188|35=8|34=2|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.407|56=FX49f14a8e05-01|6=0|11=FX49f14a8e05-01-o1|14=0|37=SIM-O-1|38=100|39=0|40=1|54=2|55=MSFT|60=20261003-11:56:26.407|150=0|151=100|10=110|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=207|35=8|34=3|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.407|56=FX49f14a8e05-01|6=420|11=FX49f14a8e05-01-o1|14=100|31=420.00|32=100|37=SIM-O-1|38=100|39=2|40=1|54=2|55=MSFT|60=20261003-11:56:26.407|150=F|151=0|10=223|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "3",
+     "ordinal": 14,
+     "raw_redacted": "8=FIX.4.4|9=135|35=3|34=3|49=FX49f14a8e05-01|52=20261003-11:56:26.408|56=SIM-MISSING_EXEC_ID|45=2|58=Required tag missing, field=17|371=17|372=8|373=1|10=255|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/14"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "3",
+     "ordinal": 17,
+     "raw_redacted": "8=FIX.4.4|9=135|35=3|34=4|49=FX49f14a8e05-01|52=20261003-11:56:26.408|56=SIM-MISSING_EXEC_ID|45=3|58=Required tag missing, field=17|371=17|372=8|373=1|10=001|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/17"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 5,
+     "msg_type": "5",
+     "ordinal": 19,
+     "raw_redacted": "8=FIX.4.4|9=112|35=5|34=5|49=FX49f14a8e05-01|52=20261003-11:56:27.398|56=SIM-MISSING_EXEC_ID|58=Certification scenario complete|10=084|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/19"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 20,
+     "raw_redacted": "8=FIX.4.4|9=77|35=5|34=4|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:27.400|56=FX49f14a8e05-01|10=065|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/20"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "52f04018-b09b-4244-a595-dda61b5bf430",
+   "failed_assertions": [
+    {
+     "actual": "Reject RefSeqNum=2 RefTagID=17 SessionRejectReason=1 Text=Required tag missing, field=17",
+     "evidence_ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/52f04018-b09b-4244-a595-dda61b5bf430/evidence/14",
+     "expected": "no Reject(3)",
+     "step": null,
+     "subject": "Counterparty messages pass platform session-level validation"
+    }
+   ],
+   "failure_summary": "Step 4 (Full fill): Unresolved scenario variable: ackExecId (field absent in an earlier counterparty message)",
+   "scenario_id": "ORD-002",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

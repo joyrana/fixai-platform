@@ -1,0 +1,101 @@
+{
+ "run_id": "49f14a8e-058e-4f51-8219-0f6b0116d791",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=95|35=A|34=1|49=FX49f14a8e05-00|52=20261003-11:56:26.382|56=SIM-MISSING_EXEC_ID|98=0|108=30|141=Y|10=151|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=95|35=A|34=1|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.386|56=FX49f14a8e05-00|98=0|108=30|141=Y|10=155|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=164|35=D|34=2|49=FX49f14a8e05-00|52=20261003-11:56:26.387|56=SIM-MISSING_EXEC_ID|11=FX49f14a8e05-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:26.387|10=213|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=198|35=8|34=2|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.389|56=FX49f14a8e05-00|6=0|11=FX49f14a8e05-00-o1|14=0|37=SIM-O-1|38=100|39=0|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:26.389|150=0|151=100|10=040|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "3",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.4|9=135|35=3|34=3|49=FX49f14a8e05-00|52=20261003-11:56:26.392|56=SIM-MISSING_EXEC_ID|45=2|58=Required tag missing, field=17|371=17|372=8|373=1|10=000|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/13"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIX.4.4|9=112|35=5|34=4|49=FX49f14a8e05-00|52=20261003-11:56:26.392|56=SIM-MISSING_EXEC_ID|58=Certification scenario complete|10=075|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/15"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 16,
+     "raw_redacted": "8=FIX.4.4|9=77|35=5|34=3|49=SIM-MISSING_EXEC_ID|52=20261003-11:56:26.393|56=FX49f14a8e05-00|10=073|",
+     "ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/16"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "43b7f14e-ded7-4aa3-ace1-20faa96e073f",
+   "failed_assertions": [
+    {
+     "actual": "<absent>",
+     "evidence_ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/10",
+     "expected": "present",
+     "step": 3,
+     "subject": "ExecID"
+    },
+    {
+     "actual": "Reject RefSeqNum=2 RefTagID=17 SessionRejectReason=1 Text=Required tag missing, field=17",
+     "evidence_ref": "run/49f14a8e-058e-4f51-8219-0f6b0116d791/exec/43b7f14e-ded7-4aa3-ace1-20faa96e073f/evidence/13",
+     "expected": "no Reject(3)",
+     "step": null,
+     "subject": "Counterparty messages pass platform session-level validation"
+    }
+   ],
+   "failure_summary": "Step 3 (New order acknowledgement): 1 assertion(s) failed on evidence #10; ExecID expected present but was <absent>",
+   "scenario_id": "ORD-001",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

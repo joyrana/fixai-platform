@@ -1,0 +1,76 @@
+{
+ "run_id": "d48f5b7f-9f90-4577-bc85-7eb30c00e6e3",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=109|35=A|34=1|49=FXd48f5b7f9f-00|52=20261003-11:57:02.438|56=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|98=0|108=30|141=Y|10=153|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=109|35=A|34=1|49=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|52=20261003-11:57:02.440|56=FXd48f5b7f9f-00|98=0|108=30|141=Y|10=146|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "1",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=114|35=1|34=2|49=FXd48f5b7f9f-00|52=20261003-11:57:02.442|56=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|112=FXd48f5b7f9f-00-tr|10=084|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "0",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=91|35=0|34=2|49=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|52=20261003-11:57:02.442|56=FXd48f5b7f9f-00|10=014|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=126|35=5|34=3|49=FXd48f5b7f9f-00|52=20261003-11:57:08.438|56=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|58=Certification scenario complete|10=042|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/12"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.4|9=91|35=5|34=3|49=SIM-HEARTBEAT_WITHOUT_TEST_REQ_ID|52=20261003-11:57:08.440|56=FXd48f5b7f9f-00|10=024|",
+     "ref": "run/d48f5b7f-9f90-4577-bc85-7eb30c00e6e3/exec/1fe5f11b-fbc3-465d-a3dc-a02cefddc434/evidence/13"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "1fe5f11b-fbc3-465d-a3dc-a02cefddc434",
+   "failed_assertions": [],
+   "failure_summary": "Step 3 (Heartbeat echoes TestReqID): No inbound 0 matching {TestReqID=FXd48f5b7f9f-00-tr} within 5000 ms",
+   "scenario_id": "SES-002",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

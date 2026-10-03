@@ -1,0 +1,94 @@
+{
+ "run_id": "de144f3c-a083-411d-83e0-00c6f7d4ef9a",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIXT.1.1|9=99|35=A|34=1|49=FXde144f3ca0-00|52=20261003-11:58:18.784|56=SIM-WRONG_AVG_PX|98=0|108=30|141=Y|1137=9|10=208|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIXT.1.1|9=99|35=A|34=1|49=SIM-WRONG_AVG_PX|52=20261003-11:58:18.786|56=FXde144f3ca0-00|98=0|108=30|141=Y|1137=9|10=210|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 10,
+     "raw_redacted": "8=FIXT.1.1|9=158|35=D|34=2|49=FXde144f3ca0-00|52=20261003-11:58:18.787|56=SIM-WRONG_AVG_PX|1128=9|11=FXde144f3ca0-00-o1|21=1|38=100|40=1|54=2|55=MSFT|60=20261003-11:58:18.787|10=189|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 11,
+     "raw_redacted": "8=FIXT.1.1|9=203|35=8|34=2|49=SIM-WRONG_AVG_PX|52=20261003-11:58:18.788|56=FXde144f3ca0-00|1128=9|6=0|11=FXde144f3ca0-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=100|39=0|40=1|54=2|55=MSFT|60=20261003-11:58:18.788|150=0|151=100|10=093|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/11"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 12,
+     "raw_redacted": "8=FIXT.1.1|9=220|35=8|34=3|49=SIM-WRONG_AVG_PX|52=20261003-11:58:18.788|56=FXde144f3ca0-00|1128=9|6=0|11=FXde144f3ca0-00-o1|14=100|17=SIM-E-2|31=420.00|32=100|37=SIM-O-1|38=100|39=2|40=1|54=2|55=MSFT|60=20261003-11:58:18.788|150=F|151=0|10=112|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIXT.1.1|9=109|35=5|34=3|49=FXde144f3ca0-00|52=20261003-11:58:19.784|56=SIM-WRONG_AVG_PX|58=Certification scenario complete|10=066|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/14"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIXT.1.1|9=74|35=5|34=4|49=SIM-WRONG_AVG_PX|52=20261003-11:58:19.786|56=FXde144f3ca0-00|10=058|",
+     "ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/15"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "b134cef0-e2fd-4550-8db5-883679db4387",
+   "failed_assertions": [
+    {
+     "actual": "0",
+     "evidence_ref": "run/de144f3c-a083-411d-83e0-00c6f7d4ef9a/exec/b134cef0-e2fd-4550-8db5-883679db4387/evidence/12",
+     "expected": "gt 0",
+     "step": 4,
+     "subject": "AvgPx"
+    }
+   ],
+   "failure_summary": "Step 4 (Full fill): 1 assertion(s) failed on evidence #12; AvgPx expected gt 0 but was 0",
+   "scenario_id": "ORD-002",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

@@ -1,0 +1,66 @@
+{
+ "run_id": "9cb1c98b-3edb-4dc0-ac5b-098664a5808f",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=88|35=A|34=1|49=FX9cb1c98b3e-00|52=20261003-11:57:10.899|56=SIM-SLOW_ACK|98=0|108=30|141=Y|10=235|",
+     "ref": "run/9cb1c98b-3edb-4dc0-ac5b-098664a5808f/exec/207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=88|35=A|34=1|49=SIM-SLOW_ACK|52=20261003-11:57:10.901|56=FX9cb1c98b3e-00|98=0|108=30|141=Y|10=219|",
+     "ref": "run/9cb1c98b-3edb-4dc0-ac5b-098664a5808f/exec/207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=157|35=D|34=2|49=FX9cb1c98b3e-00|52=20261003-11:57:10.902|56=SIM-SLOW_ACK|11=FX9cb1c98b3e-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:57:10.902|10=106|",
+     "ref": "run/9cb1c98b-3edb-4dc0-ac5b-098664a5808f/exec/207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d/evidence/9"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 11,
+     "raw_redacted": "8=FIX.4.4|9=105|35=5|34=3|49=FX9cb1c98b3e-00|52=20261003-11:57:16.898|56=SIM-SLOW_ACK|58=Certification scenario complete|10=162|",
+     "ref": "run/9cb1c98b-3edb-4dc0-ac5b-098664a5808f/exec/207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d/evidence/11"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "5",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=70|35=5|34=2|49=SIM-SLOW_ACK|52=20261003-11:57:16.900|56=FX9cb1c98b3e-00|10=134|",
+     "ref": "run/9cb1c98b-3edb-4dc0-ac5b-098664a5808f/exec/207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d/evidence/12"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "207e7c33-ecf6-42dd-aa4d-a6bd08d83b6d",
+   "failed_assertions": [],
+   "failure_summary": "Step 3 (New order acknowledgement): No inbound 8 matching {ClOrdID=FX9cb1c98b3e-00-o1} within 5000 ms",
+   "scenario_id": "ORD-001",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

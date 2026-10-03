@@ -1,0 +1,105 @@
+{
+ "run_id": "add4d848-b13f-4c83-82d2-306ead1859b1",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=97|35=A|34=1|49=FXadd4d848b1-00|52=20261003-11:56:52.142|56=SIM-REJECT_ALL_ORDERS|98=0|108=30|141=Y|10=136|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=97|35=A|34=1|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:56:52.145|56=FXadd4d848b1-00|98=0|108=30|141=Y|10=139|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=166|35=D|34=2|49=FXadd4d848b1-00|52=20261003-11:56:52.146|56=SIM-REJECT_ALL_ORDERS|11=FXadd4d848b1-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:52.146|10=026|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=244|35=8|34=2|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:56:52.147|56=FXadd4d848b1-00|6=0|11=FXadd4d848b1-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=100|39=8|40=2|44=100.00|54=1|55=AAPL|58=Rejected by broker option|60=20261003-11:56:52.147|103=0|150=8|151=0|10=155|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=114|35=5|34=3|49=FXadd4d848b1-00|52=20261003-11:56:53.142|56=SIM-REJECT_ALL_ORDERS|58=Certification scenario complete|10=059|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/12"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.4|9=79|35=5|34=3|49=SIM-REJECT_ALL_ORDERS|52=20261003-11:56:53.144|56=FXadd4d848b1-00|10=059|",
+     "ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/13"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e",
+   "failed_assertions": [
+    {
+     "actual": "8",
+     "evidence_ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/10",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "ExecType"
+    },
+    {
+     "actual": "8",
+     "evidence_ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/10",
+     "expected": "== 0",
+     "step": 3,
+     "subject": "OrdStatus"
+    },
+    {
+     "actual": "0",
+     "evidence_ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/10",
+     "expected": "eq 100",
+     "step": 3,
+     "subject": "LeavesQty"
+    },
+    {
+     "actual": "0 == 100",
+     "evidence_ref": "run/add4d848-b13f-4c83-82d2-306ead1859b1/exec/9dc1d1b2-49b5-4c8a-a96e-f529b7f9e63e/evidence/10",
+     "expected": "true",
+     "step": 3,
+     "subject": "CumQty + LeavesQty == OrderQty"
+    }
+   ],
+   "failure_summary": "Step 3 (New order acknowledgement): 4 assertion(s) failed on evidence #10; ExecType expected == 0 but was 8",
+   "scenario_id": "ORD-001",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

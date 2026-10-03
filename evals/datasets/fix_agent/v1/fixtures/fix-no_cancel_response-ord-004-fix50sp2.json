@@ -1,0 +1,86 @@
+{
+ "run_id": "2dbffb09-275d-4889-85fa-10caed8e392d",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIXT.1.1|9=105|35=A|34=1|49=FX2dbffb0927-00|52=20261003-11:58:20.917|56=SIM-NO_CANCEL_RESPONSE|98=0|108=30|141=Y|1137=9|10=147|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIXT.1.1|9=105|35=A|34=1|49=SIM-NO_CANCEL_RESPONSE|52=20261003-11:58:20.920|56=FX2dbffb0927-00|98=0|108=30|141=Y|1137=9|10=141|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 10,
+     "raw_redacted": "8=FIXT.1.1|9=174|35=D|34=2|49=FX2dbffb0927-00|52=20261003-11:58:20.921|56=SIM-NO_CANCEL_RESPONSE|1128=9|11=FX2dbffb0927-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:58:20.920|10=242|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/10"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 11,
+     "raw_redacted": "8=FIXT.1.1|9=219|35=8|34=2|49=SIM-NO_CANCEL_RESPONSE|52=20261003-11:58:20.921|56=FX2dbffb0927-00|1128=9|6=0|11=FX2dbffb0927-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=100|39=0|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:58:20.921|150=0|151=100|10=154|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/11"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "F",
+     "ordinal": 12,
+     "raw_redacted": "8=FIXT.1.1|9=176|35=F|34=3|49=FX2dbffb0927-00|52=20261003-11:58:20.922|56=SIM-NO_CANCEL_RESPONSE|1128=9|11=FX2dbffb0927-00-c1|38=100|41=FX2dbffb0927-00-o1|54=1|55=AAPL|60=20261003-11:58:20.922|10=022|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIXT.1.1|9=115|35=5|34=4|49=FX2dbffb0927-00|52=20261003-11:58:26.917|56=SIM-NO_CANCEL_RESPONSE|58=Certification scenario complete|10=228|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/14"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIXT.1.1|9=80|35=5|34=3|49=SIM-NO_CANCEL_RESPONSE|52=20261003-11:58:26.918|56=FX2dbffb0927-00|10=217|",
+     "ref": "run/2dbffb09-275d-4889-85fa-10caed8e392d/exec/e8419b96-590d-47c6-949c-f3fb598bf43c/evidence/15"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "e8419b96-590d-47c6-949c-f3fb598bf43c",
+   "failed_assertions": [],
+   "failure_summary": "Step 5 (Cancel confirmation): No inbound 8 matching {ClOrdID=FX2dbffb0927-00-c1} within 5000 ms",
+   "scenario_id": "ORD-004",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

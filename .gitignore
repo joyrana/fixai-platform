@@ -18,3 +18,12 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+# Evaluation run outputs (regenerate with python -m fixai_evals.cli)
+evals/reports/*.json

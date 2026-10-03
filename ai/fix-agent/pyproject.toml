@@ -1,0 +1,19 @@
+[project]
+name = "fixai-fix-agent"
+version = "0.1.0"
+description = "FIX diagnosis agent: evidence-backed root-cause hypotheses for certification failures"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fixai-common"]
+
+[project.scripts]
+fixai-fix-agent = "fixai_fix_agent.app:main"
+
+[tool.uv.sources]
+fixai-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fixai_fix_agent"]

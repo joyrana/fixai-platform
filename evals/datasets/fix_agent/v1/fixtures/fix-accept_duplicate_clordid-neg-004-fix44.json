@@ -1,0 +1,111 @@
+{
+ "run_id": "e53e8ef5-6639-40aa-a7e6-133778c5f5f6",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=104|35=A|34=1|49=FXe53e8ef566-00|52=20261003-11:56:51.016|56=SIM-ACCEPT_DUPLICATE_CLORDID|98=0|108=30|141=Y|10=113|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=104|35=A|34=1|49=SIM-ACCEPT_DUPLICATE_CLORDID|52=20261003-11:56:51.019|56=FXe53e8ef566-00|98=0|108=30|141=Y|10=116|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "D",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=173|35=D|34=2|49=FXe53e8ef566-00|52=20261003-11:56:51.021|56=SIM-ACCEPT_DUPLICATE_CLORDID|11=FXe53e8ef566-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:51.021|10=169|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=218|35=8|34=2|49=SIM-ACCEPT_DUPLICATE_CLORDID|52=20261003-11:56:51.021|56=FXe53e8ef566-00|6=0|11=FXe53e8ef566-00-o1|14=0|17=SIM-E-1|37=SIM-O-1|38=100|39=0|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:51.021|150=0|151=100|10=080|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "D",
+     "ordinal": 11,
+     "raw_redacted": "8=FIX.4.4|9=173|35=D|34=3|49=FXe53e8ef566-00|52=20261003-11:56:51.022|56=SIM-ACCEPT_DUPLICATE_CLORDID|11=FXe53e8ef566-00-o1|21=1|38=100|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:51.022|10=172|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/11"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "8",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=218|35=8|34=3|49=SIM-ACCEPT_DUPLICATE_CLORDID|52=20261003-11:56:51.023|56=FXe53e8ef566-00|6=0|11=FXe53e8ef566-00-o1|14=0|17=SIM-E-2|37=SIM-O-2|38=100|39=0|40=2|44=100.00|54=1|55=AAPL|60=20261003-11:56:51.023|150=0|151=100|10=087|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/12"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 14,
+     "raw_redacted": "8=FIX.4.4|9=121|35=5|34=4|49=FXe53e8ef566-00|52=20261003-11:56:51.024|56=SIM-ACCEPT_DUPLICATE_CLORDID|58=Certification scenario complete|10=252|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/14"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 4,
+     "msg_type": "5",
+     "ordinal": 15,
+     "raw_redacted": "8=FIX.4.4|9=86|35=5|34=4|49=SIM-ACCEPT_DUPLICATE_CLORDID|52=20261003-11:56:51.025|56=FXe53e8ef566-00|10=251|",
+     "ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/15"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "37806c11-8bf2-4b70-bc73-d755acbd1d0a",
+   "failed_assertions": [
+    {
+     "actual": "0",
+     "evidence_ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/12",
+     "expected": "== 8",
+     "step": 5,
+     "subject": "ExecType"
+    },
+    {
+     "actual": "<absent>",
+     "evidence_ref": "run/e53e8ef5-6639-40aa-a7e6-133778c5f5f6/exec/37806c11-8bf2-4b70-bc73-d755acbd1d0a/evidence/12",
+     "expected": "== 6",
+     "step": 5,
+     "subject": "OrdRejReason"
+    }
+   ],
+   "failure_summary": "Step 5 (Duplicate rejected): 2 assertion(s) failed on evidence #12; ExecType expected == 8 but was 0",
+   "scenario_id": "NEG-004",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}

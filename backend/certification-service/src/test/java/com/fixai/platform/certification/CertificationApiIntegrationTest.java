@@ -194,6 +194,15 @@ class CertificationApiIntegrationTest {
         assertThat(outbox).isPositive();
     }
 
+    @Test
+    void inspectsFixMessagesWithoutEchoingCredentials() {
+        String logon = "8=FIX.4.4|9=0|35=A|34=1|49=C|52=20261003-10:00:00.000|56=SIM|98=0|108=30|554=hunter2|10=000|";
+        Map<String, Object> result = post("/api/v1/fix/inspect", Map.of("raw", logon, "expectedVersion", "FIX44"), null).getBody();
+
+        assertThat(result).containsEntry("valid", false);
+        assertThat(result.toString()).doesNotContain("hunter2").contains("CHECKSUM_MISMATCH");
+    }
+
     private static HttpHeaders devHeaders(String user, String roles) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

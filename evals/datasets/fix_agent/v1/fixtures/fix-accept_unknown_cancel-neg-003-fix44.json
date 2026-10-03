@@ -1,0 +1,76 @@
+{
+ "run_id": "eb98075b-0ece-4742-a489-393136691eb6",
+ "scenarios": [
+  {
+   "evidence": [
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 4,
+     "raw_redacted": "8=FIX.4.4|9=101|35=A|34=1|49=FXeb98075b0e-00|52=20261003-11:56:41.515|56=SIM-ACCEPT_UNKNOWN_CANCEL|98=0|108=30|141=Y|10=160|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/4"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 1,
+     "msg_type": "A",
+     "ordinal": 6,
+     "raw_redacted": "8=FIX.4.4|9=101|35=A|34=1|49=SIM-ACCEPT_UNKNOWN_CANCEL|52=20261003-11:56:41.518|56=FXeb98075b0e-00|98=0|108=30|141=Y|10=163|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/6"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "F",
+     "ordinal": 9,
+     "raw_redacted": "8=FIX.4.4|9=175|35=F|34=2|49=FXeb98075b0e-00|52=20261003-11:56:41.519|56=SIM-ACCEPT_UNKNOWN_CANCEL|11=FXeb98075b0e-00-c1|38=100|41=FXeb98075b0e-00-never|54=1|55=AAPL|60=20261003-11:56:41.519|10=086|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/9"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 2,
+     "msg_type": "8",
+     "ordinal": 10,
+     "raw_redacted": "8=FIX.4.4|9=226|35=8|34=2|49=SIM-ACCEPT_UNKNOWN_CANCEL|52=20261003-11:56:41.520|56=FXeb98075b0e-00|6=0|11=FXeb98075b0e-00-c1|14=0|17=SIM-E-1|37=SIM-O-1|38=0|39=4|40=2|41=FXeb98075b0e-00-never|54=1|55=AAPL|60=20261003-11:56:41.520|150=4|151=0|10=212|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/10"
+    },
+    {
+     "direction": "OUTBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 12,
+     "raw_redacted": "8=FIX.4.4|9=118|35=5|34=3|49=FXeb98075b0e-00|52=20261003-11:56:47.515|56=SIM-ACCEPT_UNKNOWN_CANCEL|58=Certification scenario complete|10=058|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/12"
+    },
+    {
+     "direction": "INBOUND",
+     "event_text": null,
+     "kind": "MESSAGE",
+     "msg_seq_num": 3,
+     "msg_type": "5",
+     "ordinal": 13,
+     "raw_redacted": "8=FIX.4.4|9=83|35=5|34=3|49=SIM-ACCEPT_UNKNOWN_CANCEL|52=20261003-11:56:47.517|56=FXeb98075b0e-00|10=049|",
+     "ref": "run/eb98075b-0ece-4742-a489-393136691eb6/exec/4700adf3-6b29-4b32-ae3f-144ad63e117e/evidence/13"
+    }
+   ],
+   "evidence_truncated": true,
+   "execution_id": "4700adf3-6b29-4b32-ae3f-144ad63e117e",
+   "failed_assertions": [],
+   "failure_summary": "Step 3 (Cancel rejected): No inbound 9 matching {ClOrdID=FXeb98075b0e-00-c1} within 5000 ms",
+   "scenario_id": "NEG-003",
+   "status": "FAILED"
+  }
+ ],
+ "verdict": "FAILED"
+}
