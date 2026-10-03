@@ -52,6 +52,21 @@ class LoggingFixGatewayEventServiceTest {
                 () -> service.onProcessingError(sessionId, unsupported, "fromAdmin", new IllegalStateException("boom")));
     }
 
+    @Test
+    void summaryShouldNeverContainMessageBodyOrCredentials() throws Exception {
+        quickfix.fix44.Logon logon = typedMessage(new quickfix.fix44.Logon(), quickfix.fix44.Logon.MSGTYPE);
+        logon.getHeader().setInt(quickfix.field.MsgSeqNum.FIELD, 1);
+        logon.setString(quickfix.field.Username.FIELD, "trader1");
+        logon.setString(quickfix.field.Password.FIELD, "s3cr3t-password");
+
+        String summary = LoggingFixGatewayEventService.summary(logon);
+
+        org.assertj.core.api.Assertions.assertThat(summary)
+                .isEqualTo("[msgType=A, msgSeqNum=1]")
+                .doesNotContain("s3cr3t-password")
+                .doesNotContain("trader1");
+    }
+
     private <T extends Message> T typedMessage(T message, String msgType) throws Exception {
         message.getHeader().setString(BeginString.FIELD, "FIX.4.4");
         message.getHeader().setString(MsgType.FIELD, msgType);

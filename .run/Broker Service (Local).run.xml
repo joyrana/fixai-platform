@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Broker Service (Local)" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.fixai.platform.FixaiPlatformApplication" />
+    <option name="MAIN_CLASS_NAME" value="com.fixai.platform.broker.BrokerServiceApplication" />
     <module name="broker-service" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/broker-service" />
     <method v="2">

@@ -1,0 +1,22 @@
+name: fixai
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-fixai}
+      POSTGRES_USER: ${POSTGRES_USER:-fixai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  postgres-data:

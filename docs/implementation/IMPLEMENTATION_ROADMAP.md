@@ -5,7 +5,7 @@ Milestones follow dependency order. Each milestone is a runnable increment with 
 | # | Milestone | Depends on | Status |
 |---|---|---|---|
 | M0 | Repository assessment, architecture and contracts | - | done |
-| M1 | Build consistency, CI, developer setup, logging redaction fix | M0 | planned |
+| M1 | Build consistency, CI, developer setup, logging redaction fix | M0 | done |
 | M2 | `fix-core` library and deterministic FIX simulator | M1 | planned |
 | M3 | Deterministic certification engine (scenarios, runner, evidence, replay, report) | M2 | planned |
 | M4 | Broker persistence and FIX session configuration | M1 | planned |
