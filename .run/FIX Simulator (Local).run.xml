@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FIX Simulator (Local)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.fixai.platform.simulator.SimulatorServerApplication" />
+    <module name="fix-simulator" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/fix-simulator" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

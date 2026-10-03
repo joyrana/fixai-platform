@@ -1,0 +1,51 @@
+id: ORD-005
+version: 1
+title: Resting order replaced
+description: An OrderCancelReplaceRequest increasing quantity must produce ExecType=5 with the new quantity and OrigClOrdID.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, replace]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Resting limit order
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: GOOG
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      capture: {orderId: OrderID}
+  - send:
+      description: Replace quantity 100 -> 200 at the same price
+      msgType: G
+      fields:
+        OrigClOrdID: "${id:o1}"
+        ClOrdID: "${id:r1}"
+        HandlInst: "1"
+        Symbol: GOOG
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "200"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: Replace confirmation
+      msgType: "8"
+      match: {ClOrdID: "${id:r1}"}
+      assert:
+        ExecType: {equals: "5"}
+        OrigClOrdID: {equals: "${id:o1}"}
+        OrderID: {equals: "${var:orderId}"}
+        OrderQty: {numericEquals: "200"}
+        LeavesQty: {numericEquals: "200"}
+      invariants:
+        - "CumQty + LeavesQty == OrderQty"

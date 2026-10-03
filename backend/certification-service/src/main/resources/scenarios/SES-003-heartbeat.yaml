@@ -1,0 +1,23 @@
+id: SES-003
+version: 1
+title: Heartbeats sent at the negotiated interval
+description: With HeartBtInt=2 and no traffic, the counterparty must send unsolicited Heartbeats without TestReqID.
+category: SESSION
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, heartbeat]
+session:
+  heartbeatIntervalSeconds: 2
+steps:
+  - logon: {timeoutMs: 10000}
+  - expect:
+      description: First unsolicited Heartbeat within the interval plus tolerance
+      msgType: "0"
+      timeoutMs: 4500
+      assert:
+        TestReqID: {present: false}
+  - expect:
+      description: Second unsolicited Heartbeat
+      msgType: "0"
+      timeoutMs: 4500
+      assert:
+        TestReqID: {present: false}

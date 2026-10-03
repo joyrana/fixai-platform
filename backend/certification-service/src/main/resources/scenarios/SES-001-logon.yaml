@@ -1,0 +1,23 @@
+id: SES-001
+version: 1
+title: Logon handshake
+description: >
+  The counterparty must answer a Logon carrying ResetSeqNumFlag=Y with a Logon that echoes HeartBtInt,
+  EncryptMethod=0 and ResetSeqNumFlag=Y, using MsgSeqNum=1.
+category: SESSION
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, logon]
+session:
+  heartbeatIntervalSeconds: 30
+steps:
+  - logon:
+      description: Logon completes
+      timeoutMs: 10000
+  - expect:
+      description: Counterparty Logon response
+      msgType: A
+      assert:
+        HeartBtInt: {equals: "30"}
+        EncryptMethod: {equals: "0"}
+        ResetSeqNumFlag: {equals: "Y"}
+        MsgSeqNum: {equals: "1"}

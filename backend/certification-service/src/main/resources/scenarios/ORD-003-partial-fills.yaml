@@ -1,0 +1,48 @@
+id: ORD-003
+version: 1
+title: Large order partially then fully filled
+description: Partial fills must report OrdStatus=1 with CumQty+LeavesQty=OrderQty, distinct ExecIDs and a final fill.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, fill, partial-fill]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Buy 3000 IBM at market
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: IBM
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "3000"
+        OrdType: "1"
+  - expect:
+      description: Acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "0"}
+      capture: {ackExecId: ExecID}
+  - expect:
+      description: Partial fill
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "1"}
+      assert:
+        ExecType: {equals: {FIX42: "1", default: "F"}}
+        ExecID: {notEquals: "${var:ackExecId}"}
+        CumQty: {gt: "0"}
+        LeavesQty: {gt: "0"}
+      invariants:
+        - "CumQty + LeavesQty == OrderQty"
+        - "CumQty < OrderQty"
+      capture: {partialExecId: ExecID}
+  - expect:
+      description: Final fill
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "2"}
+      assert:
+        ExecID: {notEquals: "${var:partialExecId}"}
+        LeavesQty: {numericEquals: "0"}
+        CumQty: {numericEquals: "3000"}
+      invariants:
+        - "CumQty + LeavesQty == OrderQty"

@@ -1,0 +1,44 @@
+id: SES-005
+version: 1
+title: ResendRequest answered with gap fill and PossDup resends
+description: >
+  After application traffic, a ResendRequest from sequence 1 must be answered with SequenceReset-GapFill
+  (GapFillFlag=Y) for administrative messages and PossDupFlag=Y resends of application messages.
+category: RECOVERY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, sequence, recovery, resend]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Market order to generate application traffic
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: IBM
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "10"
+        OrdType: "1"
+  - expect:
+      description: Order filled
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "2"}
+  - send:
+      description: Request resend of everything from sequence 1
+      msgType: "2"
+      fields:
+        BeginSeqNo: "1"
+        EndSeqNo: "0"
+  - expect:
+      description: Administrative messages gap-filled
+      msgType: "4"
+      assert:
+        GapFillFlag: {equals: "Y"}
+        NewSeqNo: {gt: "1"}
+  - expect:
+      description: Application messages resent as possible duplicates
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", PossDupFlag: "Y"}
+      assert:
+        OrigSendingTime: {present: true}

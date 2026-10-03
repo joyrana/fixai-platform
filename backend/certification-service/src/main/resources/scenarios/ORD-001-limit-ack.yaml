@@ -1,0 +1,41 @@
+id: ORD-001
+version: 1
+title: Resting limit order acknowledged
+description: A non-marketable limit order must be acknowledged with ExecType=0/OrdStatus=0 and consistent quantities.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, new-order]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Buy 100 AAPL limit 100.00 (below reference price)
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "2"
+        Price: "100.00"
+  - expect:
+      description: New order acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: "0"}
+        OrdStatus: {equals: "0"}
+        OrderID: {present: true}
+        ExecID: {present: true}
+        Symbol: {equals: AAPL}
+        Side: {equals: "1"}
+        LeavesQty: {numericEquals: "100"}
+        CumQty: {numericEquals: "0"}
+      invariants:
+        - "CumQty + LeavesQty == OrderQty"
+  - expectNone:
+      description: Resting order is not filled
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "2"}
+      windowMs: 1000

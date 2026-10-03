@@ -1,0 +1,7 @@
+id: full-certification
+title: Full FIX order-routing certification
+description: Session layer, recovery, order lifecycle, negative and boundary scenarios.
+scenarios: [SES-001, SES-002, SES-003, SES-004, SES-005, SES-006, SES-007, SES-008,
+            ORD-001, ORD-002, ORD-003, ORD-004, ORD-005, ORD-006,
+            NEG-001, NEG-002, NEG-003, NEG-004, NEG-005, NEG-006, NEG-007,
+            BND-001, BND-002, BND-003]

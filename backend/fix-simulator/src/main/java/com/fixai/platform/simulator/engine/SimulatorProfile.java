@@ -22,7 +22,7 @@ public enum SimulatorProfile {
     ACCEPT_UNKNOWN_CANCEL("Acknowledges cancels for unknown OrigClOrdID instead of sending OrderCancelReject(9)"),
     MISSING_ORIG_CLORDID("Omits OrigClOrdID(41) on cancel and replace acknowledgements"),
     ACCEPT_DUPLICATE_CLORDID("Accepts a NewOrderSingle whose ClOrdID duplicates an open order"),
-    SLOW_ACK("Delays every ExecutionReport by 3 seconds"),
+    SLOW_ACK("Delays every ExecutionReport by 6 seconds, beyond the 5 second response expectation"),
     HEARTBEAT_WITHOUT_TEST_REQ_ID("Answers TestRequest(1) with a Heartbeat(0) that omits TestReqID(112)"),
     GAP_FILL_WITHOUT_FLAG("Sends SequenceReset(4) without GapFillFlag(123)=Y when answering ResendRequest");
 

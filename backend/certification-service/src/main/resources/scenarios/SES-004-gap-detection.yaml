@@ -1,0 +1,45 @@
+id: SES-004
+version: 1
+title: Inbound sequence gap triggers ResendRequest
+description: >
+  When the platform skips outbound sequence numbers, the counterparty must detect the gap, send a ResendRequest
+  starting at the first missing number and accept the gap fill. The TestRequest that revealed the gap is an
+  administrative message, so it is gap-filled rather than replayed; a new TestRequest proves the session recovered.
+category: RECOVERY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [session, sequence, recovery]
+steps:
+  - logon: {timeoutMs: 10000}
+  - skipOutboundSequence:
+      description: Create a gap of 5 outbound sequence numbers
+      count: 5
+      captureAs: gapStart
+  - send:
+      description: Send TestRequest after the gap
+      msgType: "1"
+      fields:
+        TestReqID: "${id:gap}"
+  - expect:
+      description: Counterparty requests resend from the first missing sequence number
+      msgType: "2"
+      timeoutMs: 5000
+      assert:
+        BeginSeqNo: {equals: "${var:gapStart}"}
+  - expect:
+      description: Platform engine has sent its SequenceReset-GapFill
+      direction: outbound
+      msgType: "4"
+      timeoutMs: 5000
+      assert:
+        GapFillFlag: {equals: "Y"}
+  - send:
+      description: New TestRequest after the gap fill
+      msgType: "1"
+      fields:
+        TestReqID: "${id:tr}"
+  - expect:
+      description: Session recovered and answers TestRequest
+      msgType: "0"
+      match:
+        TestReqID: "${id:tr}"
+      timeoutMs: 5000

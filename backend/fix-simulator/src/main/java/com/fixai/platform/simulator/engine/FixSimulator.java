@@ -44,7 +44,7 @@ import quickfix.mina.acceptor.DynamicAcceptorSessionProvider.TemplateMapping;
 public final class FixSimulator implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FixSimulator.class);
-    static final long SLOW_ACK_DELAY_MILLIS = 3_000;
+    static final long SLOW_ACK_DELAY_MILLIS = 6_000;
     private static final FixMessageRedactor REDACTOR = new FixMessageRedactor();
 
     private final int port;

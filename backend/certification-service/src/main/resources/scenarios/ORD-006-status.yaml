@@ -1,0 +1,40 @@
+id: ORD-006
+version: 1
+title: Order status request answered
+description: An OrderStatusRequest for a resting order must return its current state.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, status]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Resting limit order
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "2"
+        TransactTime: "${now}"
+        OrderQty: "50"
+        OrdType: "2"
+        Price: "500.00"
+  - expect:
+      description: Acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+  - send:
+      description: Request order status
+      msgType: H
+      fields:
+        ClOrdID: "${id:o1}"
+        Symbol: AAPL
+        Side: "2"
+  - expect:
+      description: Status report
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: {FIX42: "0", default: "I"}}
+        OrdStatus: {equals: "0"}
+        LeavesQty: {numericEquals: "50"}

@@ -1,0 +1,32 @@
+id: BND-002
+version: 1
+title: Quantity above limit rejected
+description: An order one unit above the 1,000,000 limit must be rejected with OrdRejReason=3 (order exceeds limit).
+category: BOUNDARY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, quantity, limits, reject]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Buy 1,000,001 AAPL at market
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "1000001"
+        OrdType: "1"
+  - expect:
+      description: Rejected
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        ExecType: {equals: "8"}
+        OrdRejReason: {equals: "3"}
+  - expectNone:
+      description: Never filled
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "2"}
+      windowMs: 500

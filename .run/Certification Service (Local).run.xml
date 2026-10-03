@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Certification Service (Local)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.fixai.platform.certification.CertificationServiceApplication" />
+    <module name="certification-service" />
+    <envs>
+      <env name="FIX_SIMULATOR_EMBEDDED" value="true" />
+    </envs>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/certification-service" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

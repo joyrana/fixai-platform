@@ -1,0 +1,46 @@
+id: BND-003
+version: 1
+title: Price precision boundary
+description: A price with 4 decimals must be accepted and a price with 6 decimals rejected.
+category: BOUNDARY
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, price, limits]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Limit price with 4 decimals
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "10"
+        OrdType: "2"
+        Price: "100.1234"
+  - expect:
+      description: Accepted
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}"}
+      assert:
+        OrdStatus: {equals: "0"}
+  - send:
+      description: Limit price with 6 decimals
+      msgType: D
+      fields:
+        ClOrdID: "${id:o2}"
+        HandlInst: "1"
+        Symbol: AAPL
+        Side: "1"
+        TransactTime: "${now}"
+        OrderQty: "10"
+        OrdType: "2"
+        Price: "100.123456"
+  - expect:
+      description: Rejected
+      msgType: "8"
+      match: {ClOrdID: "${id:o2}"}
+      assert:
+        ExecType: {equals: "8"}
+        OrdStatus: {equals: "8"}

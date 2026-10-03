@@ -1,0 +1,42 @@
+id: ORD-002
+version: 1
+title: Market order acknowledged and fully filled
+description: A small market order must be acknowledged and then filled with consistent execution fields and a new ExecID.
+category: POSITIVE
+fixVersions: [FIX42, FIX44, FIX50SP2]
+tags: [order-lifecycle, fill]
+steps:
+  - logon: {timeoutMs: 10000}
+  - send:
+      description: Sell 100 MSFT at market
+      msgType: D
+      fields:
+        ClOrdID: "${id:o1}"
+        HandlInst: "1"
+        Symbol: MSFT
+        Side: "2"
+        TransactTime: "${now}"
+        OrderQty: "100"
+        OrdType: "1"
+  - expect:
+      description: Acknowledgement
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "0"}
+      assert:
+        ExecType: {equals: "0"}
+      capture: {ackExecId: ExecID, orderId: OrderID}
+  - expect:
+      description: Full fill
+      msgType: "8"
+      match: {ClOrdID: "${id:o1}", OrdStatus: "2"}
+      assert:
+        ExecType: {equals: {FIX42: "2", default: "F"}}
+        ExecID: {notEquals: "${var:ackExecId}"}
+        OrderID: {equals: "${var:orderId}"}
+        "32": {numericEquals: "100"}
+        LastPx: {gt: "0"}
+        CumQty: {numericEquals: "100"}
+        LeavesQty: {numericEquals: "0"}
+        AvgPx: {gt: "0"}
+      invariants:
+        - "CumQty + LeavesQty == OrderQty"
