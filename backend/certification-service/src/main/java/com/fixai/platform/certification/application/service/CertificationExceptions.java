@@ -43,6 +43,20 @@ public final class CertificationExceptions {
         }
     }
 
+    /** A required human approval is missing, not approved, expired, already used or for a different payload. */
+    public static final class ApprovalRefused extends RuntimeException {
+        private final List<String> codes;
+
+        public ApprovalRefused(String detail, List<String> codes) {
+            super(detail);
+            this.codes = List.copyOf(codes);
+        }
+
+        public List<String> codes() {
+            return codes;
+        }
+    }
+
     /** Operation not valid in the run's current state. */
     public static final class InvalidState extends RuntimeException {
         public InvalidState(String message) {

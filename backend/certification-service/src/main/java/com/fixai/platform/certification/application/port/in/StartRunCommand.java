@@ -11,6 +11,7 @@ import java.util.UUID;
  * @param targetType SIMULATOR (default, synthetic) or SESSION_CONFIG (approved TEST/UAT configuration)
  * @param simulatorProfile simulator behaviour profile for SIMULATOR targets (default COMPLIANT)
  * @param sessionConfigId broker-service session configuration for SESSION_CONFIG targets
+ * @param approvalId human approval (START_EXTERNAL_CERTIFICATION) consumed before a SESSION_CONFIG run starts
  */
 public record StartRunCommand(
         String suiteId,
@@ -18,7 +19,8 @@ public record StartRunCommand(
         FixVersion fixVersion,
         RunTarget.Type targetType,
         String simulatorProfile,
-        UUID sessionConfigId) {
+        UUID sessionConfigId,
+        UUID approvalId) {
 
     public StartRunCommand {
         scenarioIds = scenarioIds == null ? List.of() : List.copyOf(scenarioIds);
@@ -27,6 +29,7 @@ public record StartRunCommand(
     /** Canonical form used for idempotency comparison. */
     public String canonical() {
         return String.join("|", String.valueOf(suiteId), String.join(",", scenarioIds), String.valueOf(fixVersion),
-                String.valueOf(targetType), String.valueOf(simulatorProfile), String.valueOf(sessionConfigId));
+                String.valueOf(targetType), String.valueOf(simulatorProfile), String.valueOf(sessionConfigId),
+                String.valueOf(approvalId));
     }
 }

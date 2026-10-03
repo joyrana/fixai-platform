@@ -155,8 +155,10 @@ def build_graph(agents: AgentRunner, tools: ToolRunner,
         result = await agents("human-review-agent", {
             "action": "START_EXTERNAL_CERTIFICATION", "target_type": "session-config",
             "target_id": external.session_config_id, "environment": external.environment,
-            "arguments": {"fixVersion": request.fix_version, "scenarioIds": state["plan"]["scenario_ids"],  # type: ignore[index]
-                          "simulatorRunId": state["run_id"]},
+            # Exactly what certification-service will present when a certification engineer starts the external run;
+            # the simulator run is evidence, not part of the approved action.
+            "arguments": {"fixVersion": request.fix_version,
+                          "scenarioIds": sorted(state["plan"]["scenario_ids"])},  # type: ignore[index]
             "justification": external.justification, "evidence_refs": evidence,
             "requested_by": state["requested_by"], "idempotency_key": f"wf-approval-{state['workflow_id']}"})
         output = result["output"]

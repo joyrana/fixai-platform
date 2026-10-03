@@ -73,7 +73,8 @@ public class CertificationRunController {
         StartRunCommand command = new StartRunCommand(request.suiteId(), request.scenarioIds(), request.fixVersion(),
                 request.target() == null ? null : request.target().type(),
                 request.target() == null ? null : request.target().simulatorProfile(),
-                request.target() == null ? null : request.target().sessionConfigId());
+                request.target() == null ? null : request.target().sessionConfigId(),
+                request.target() == null ? null : request.target().approvalId());
         CertificationRunService.StartResult result =
                 service.start(command, actors.get(), CorrelationIdFilter.current(http), idempotencyKey);
         RunResponse body = RunResponse.of(result.run());

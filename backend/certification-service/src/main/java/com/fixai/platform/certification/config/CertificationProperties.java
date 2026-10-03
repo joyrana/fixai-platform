@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
  * @param maxConcurrentRuns runs executing at once; further runs queue up to {@code runQueueCapacity}
  * @param maxParallelScenarios per-run concurrency for simulator targets
  * @param brokerServiceUrl base URL of broker-service; when blank, external targets are refused
+ * @param workflowServiceUrl base URL of workflow-service for consuming approvals; when blank, external targets are refused
  */
 @Validated
 @ConfigurationProperties(prefix = "fixai.certification")
@@ -25,6 +26,7 @@ public record CertificationProperties(
         @Min(1) @Max(300) int defaultHeartbeatSeconds,
         @Min(1) @Max(60) int reconnectIntervalSeconds,
         String brokerServiceUrl,
+        String workflowServiceUrl,
         @NotBlank String engineVersion) {
 
     public record Simulator(@NotBlank String host, @Min(1) @Max(65535) int port, boolean embedded) {

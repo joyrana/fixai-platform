@@ -41,6 +41,7 @@ fixai:
     default-heartbeat-seconds: 30
     reconnect-interval-seconds: 1
     broker-service-url: ${BROKER_SERVICE_URL:}
+    workflow-service-url: ${WORKFLOW_SERVICE_URL:}
     engine-version: 1.0.0
 
 management:

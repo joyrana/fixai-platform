@@ -8,8 +8,11 @@ import com.fixai.platform.certification.adapter.out.broker.UnconfiguredSessionCo
 import com.fixai.platform.certification.adapter.out.catalogue.ClasspathScenarioCatalogue;
 import com.fixai.platform.certification.adapter.out.fix.QuickFixTransport;
 import com.fixai.platform.certification.adapter.out.metrics.MicrometerRunMetrics;
+import com.fixai.platform.certification.adapter.out.workflow.UnconfiguredApprovalAdapter;
+import com.fixai.platform.certification.adapter.out.workflow.WorkflowApprovalAdapter;
 import com.fixai.platform.certification.adapter.out.persistence.JdbcRunRepository;
 import com.fixai.platform.certification.application.engine.ScenarioExecutor;
+import com.fixai.platform.certification.application.port.out.ApprovalPort;
 import com.fixai.platform.certification.application.port.out.AuditPort;
 import com.fixai.platform.certification.application.port.out.RunMetrics;
 import com.fixai.platform.certification.application.port.out.RunRepository;
@@ -80,6 +83,15 @@ public class CertificationConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public ApprovalPort approvalPort(CertificationProperties properties, RestClient.Builder builder) {
+        String url = properties.workflowServiceUrl();
+        return url == null || url.isBlank()
+                ? new UnconfiguredApprovalAdapter()
+                : new WorkflowApprovalAdapter(builder.baseUrl(url).build());
+    }
+
+    @Bean
     public RunMetrics runMetrics(MeterRegistry registry) {
         return new MicrometerRunMetrics(registry);
     }
@@ -105,12 +117,12 @@ public class CertificationConfiguration {
     @Bean
     public CertificationRunService certificationRunService(
             ScenarioCatalogue catalogue, RunRepository runs, ScenarioExecutor executor, SessionConfigPort sessionConfigs,
-            AuditPort audit, RunMetrics metrics, CertificationProperties properties, Clock clock,
+            ApprovalPort approvals, AuditPort audit, RunMetrics metrics, CertificationProperties properties, Clock clock,
             ExecutorService certificationRunPool, ExecutorService certificationScenarioPool) {
         CertificationSettings settings = new CertificationSettings(properties.simulator().host(),
                 properties.simulator().port(), properties.maxParallelScenarios(), properties.scenarioTimeout(),
                 properties.defaultHeartbeatSeconds(), properties.reconnectIntervalSeconds(), properties.engineVersion());
-        return new CertificationRunService(catalogue, runs, executor, sessionConfigs, audit, metrics, settings, clock,
+        return new CertificationRunService(catalogue, runs, executor, sessionConfigs, approvals, audit, metrics, settings, clock,
                 certificationRunPool, certificationScenarioPool);
     }
 

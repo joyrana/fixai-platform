@@ -5,6 +5,7 @@ import com.fixai.platform.certification.application.engine.ExecutionTarget;
 import com.fixai.platform.certification.application.engine.ReplayVerifier;
 import com.fixai.platform.certification.application.engine.ScenarioExecutor;
 import com.fixai.platform.certification.application.port.in.StartRunCommand;
+import com.fixai.platform.certification.application.port.out.ApprovalPort;
 import com.fixai.platform.certification.application.port.out.AuditPort;
 import com.fixai.platform.certification.application.port.out.RunMetrics;
 import com.fixai.platform.certification.application.port.out.RunRepository;
@@ -25,6 +26,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +54,7 @@ public class CertificationRunService {
     private final RunRepository runs;
     private final ScenarioExecutor executor;
     private final SessionConfigPort sessionConfigs;
+    private final ApprovalPort approvals;
     private final AuditPort audit;
     private final RunMetrics metrics;
     private final CertificationSettings settings;
@@ -62,12 +65,13 @@ public class CertificationRunService {
 
     public CertificationRunService(
             ScenarioCatalogue catalogue, RunRepository runs, ScenarioExecutor executor, SessionConfigPort sessionConfigs,
-            AuditPort audit, RunMetrics metrics, CertificationSettings settings, Clock clock, ExecutorService runPool,
-            ExecutorService scenarioPool) {
+            ApprovalPort approvals, AuditPort audit, RunMetrics metrics, CertificationSettings settings, Clock clock,
+            ExecutorService runPool, ExecutorService scenarioPool) {
         this.catalogue = catalogue;
         this.runs = runs;
         this.executor = executor;
         this.sessionConfigs = sessionConfigs;
+        this.approvals = approvals;
         this.audit = audit;
         this.metrics = metrics;
         this.settings = settings;
@@ -102,6 +106,9 @@ public class CertificationRunService {
         UUID runId = UUID.randomUUID();
         TargetResolution resolution = resolveTarget(command, correlationId);
         RunTarget target = resolution.target();
+        if (target.type() == RunTarget.Type.SESSION_CONFIG) {
+            consumeExternalApproval(command, target, scenarios, actor, correlationId);
+        }
         String senderBase = resolution.senderCompId() != null
                 ? resolution.senderCompId()
                 : "FX" + runId.toString().replace("-", "").substring(0, 10);
@@ -124,6 +131,32 @@ public class CertificationRunService {
             throw new CertificationExceptions.InvalidState("Run capacity exhausted; retry later");
         }
         return new StartResult(run, true);
+    }
+
+    /**
+     * Connecting to a counterparty endpoint requires a human approval of exactly this run: the presented payload is
+     * re-hashed by workflow-service and must equal the approved one, and the approval is consumed (single use).
+     */
+    private void consumeExternalApproval(StartRunCommand command, RunTarget target, List<Scenario> scenarios, String actor,
+                                         String correlationId) {
+        if (command.approvalId() == null) {
+            throw new CertificationExceptions.ApprovalRefused(
+                    "External certification requires an approved START_EXTERNAL_CERTIFICATION request (approvalId)",
+                    List.of("APPROVAL_REQUIRED"));
+        }
+        Map<String, Object> arguments = new LinkedHashMap<>();
+        arguments.put("fixVersion", command.fixVersion().name());
+        arguments.put("scenarioIds", scenarios.stream().map(Scenario::id).sorted().toList());
+        ApprovalPort.ConsumeOutcome outcome = approvals.consume(command.approvalId(), new ApprovalPort.ApprovalPayload(
+                ApprovalPort.START_EXTERNAL_CERTIFICATION, "session-config", target.sessionConfigId().toString(),
+                target.environment(), arguments), correlationId);
+        audit.record(actor, "EXTERNAL_CERTIFICATION_APPROVAL_CONSUMED", "approval", command.approvalId().toString(),
+                correlationId, outcome.consumed() ? "SUCCESS" : "DENIED",
+                Map.of("sessionConfigId", target.sessionConfigId().toString(), "environment", target.environment(),
+                        "codes", String.join(",", outcome.codes())));
+        if (!outcome.consumed()) {
+            throw new CertificationExceptions.ApprovalRefused(outcome.detail(), outcome.codes());
+        }
     }
 
     /** Validates a test plan without starting a run; returns the resolved scenario IDs. */

@@ -65,7 +65,7 @@ public class ScenarioController {
     public TestPlanValidation validate(@Valid @RequestBody TestPlanRequest request) {
         try {
             List<String> ids = runs.validatePlan(new StartRunCommand(request.suiteId(), request.scenarioIds(),
-                    request.fixVersion(), null, null, null));
+                    request.fixVersion(), null, null, null, null));
             return new TestPlanValidation(true, List.of(), ids);
         } catch (CertificationExceptions.InvalidRequest exception) {
             return new TestPlanValidation(false, exception.problems(), List.of());

@@ -35,6 +35,13 @@ public class ApiExceptionHandler {
         return problem(HttpStatus.CONFLICT, exception.getMessage(), request);
     }
 
+    @ExceptionHandler(CertificationExceptions.ApprovalRefused.class)
+    ProblemDetail approvalRefused(CertificationExceptions.ApprovalRefused exception, HttpServletRequest request) {
+        ProblemDetail problem = problem(HttpStatus.CONFLICT, exception.getMessage(), request);
+        problem.setProperty("codes", exception.codes());
+        return problem;
+    }
+
     @ExceptionHandler(CertificationExceptions.TargetNotAllowed.class)
     ProblemDetail forbidden(RuntimeException exception, HttpServletRequest request) {
         return problem(HttpStatus.FORBIDDEN, exception.getMessage(), request);

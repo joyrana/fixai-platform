@@ -55,10 +55,15 @@ public final class ApiDtos {
         }
     }
 
+    /**
+     * Run target. SESSION_CONFIG targets need {@code approvalId}: a START_EXTERNAL_CERTIFICATION approval whose payload
+     * is exactly this session configuration, environment, FIX version and (sorted) scenario list. It is consumed once.
+     */
     public record TargetRequest(
             RunTarget.Type type,
             @Pattern(regexp = "[A-Z_]{1,64}") String simulatorProfile,
-            UUID sessionConfigId) {
+            UUID sessionConfigId,
+            UUID approvalId) {
     }
 
     public record StartRunRequest(
