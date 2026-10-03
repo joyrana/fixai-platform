@@ -6,7 +6,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from fixai_common import telemetry
 from fixai_common.identity import (
@@ -16,6 +16,9 @@ from fixai_common.identity import (
     principal_from_dev_headers,
     security_enabled,
 )
+
+PUBLIC_PATHS = frozenset({"/health/live", "/health/ready", "/metrics", "/openapi.json", "/docs"})
+"""Probes, metrics (bounded labels, no payloads) and API docs; everything else needs an authenticated caller."""
 
 
 def create_app(name: str, version: str, readiness: Callable[[], Awaitable[bool]] | None = None) -> FastAPI:
@@ -31,7 +34,7 @@ def create_app(name: str, version: str, readiness: Callable[[], Awaitable[bool]]
         principal = resolve_principal(request)
         token_p = current_principal.set(principal)
         try:
-            if principal is None and request.url.path not in ("/health/live", "/health/ready", "/openapi.json", "/docs"):
+            if principal is None and request.url.path not in PUBLIC_PATHS:
                 return JSONResponse({"detail": "Authentication required"}, status_code=401)
             response = await call_next(request)
         finally:
@@ -43,6 +46,11 @@ def create_app(name: str, version: str, readiness: Callable[[], Awaitable[bool]]
     @app.get("/health/live")
     async def live() -> dict[str, str]:
         return {"status": "UP"}
+
+    @app.get("/metrics", include_in_schema=False)
+    async def metrics() -> Response:
+        body, content_type = telemetry.metrics_response()
+        return Response(body, media_type=content_type)
 
     @app.get("/health/ready")
     async def ready() -> JSONResponse:

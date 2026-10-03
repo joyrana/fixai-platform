@@ -1,0 +1,145 @@
+{{- if .Values.networkPolicy.enabled }}
+{{- $np := .Values.networkPolicy }}
+# Default deny for every platform pod; the policies below open only the paths the architecture needs:
+#   ingress -> ui -> platform services / orchestrator;  orchestrator -> MCP servers -> platform services;
+#   platform services -> database, simulator and (opt-in) broker CIDRs.  AI components have no route to brokers.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-default-deny
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { app.kubernetes.io/part-of: fixai-platform }
+  policyTypes: [Ingress, Egress]
+  egress:
+    - ports:   # DNS
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-ui
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { fixai.io/tier: ui }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ $np.ingressNamespace }} }
+      ports: [{ port: 8080 }]
+  egress:
+    - to:
+        - podSelector: { matchLabels: { fixai.io/tier: platform } }
+        - podSelector: { matchLabels: { fixai.io/tier: simulator } }
+      ports: [{ port: 8080 }]
+    - to:
+        - podSelector: { matchLabels: { fixai.io/tier: agents } }
+      ports: [{ port: 8100 }]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-platform-services
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { fixai.io/tier: platform }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { fixai.io/tier: ui } }
+        - podSelector: { matchLabels: { fixai.io/tier: platform } }
+        - podSelector: { matchLabels: { fixai.io/tier: mcp } }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ $np.monitoringNamespace }} }
+      ports: [{ port: 8080 }]
+  egress:
+    - to:
+        - podSelector: { matchLabels: { fixai.io/tier: platform } }
+        - podSelector: { matchLabels: { fixai.io/tier: simulator } }
+      ports: [{ port: 8080 }, { port: {{ .Values.simulator.fixPort }} }]
+    - ports: [{ port: {{ .Values.database.port }} }]   # PostgreSQL (external; NetworkPolicy cannot select DNS names)
+    - ports: [{ port: 443 }]                          # OIDC issuer (JWKS, client credentials)
+    {{- with $np.brokerEgressCidrs }}
+    - to:                                             # broker TEST/UAT FIX endpoints (certification-service only uses them)
+        {{- range . }}
+        - ipBlock: { cidr: {{ . }} }
+        {{- end }}
+    {{- end }}
+    {{- with $np.extraEgressCidrs }}
+    - to:
+        {{- range . }}
+        - ipBlock: { cidr: {{ . }} }
+        {{- end }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-simulator
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { fixai.io/tier: simulator }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { fixai.io/tier: platform } }
+        - podSelector: { matchLabels: { fixai.io/tier: ui } }
+        - podSelector: { matchLabels: { fixai.io/tier: mcp } }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ $np.monitoringNamespace }} }
+      ports: [{ port: 8080 }, { port: {{ .Values.simulator.fixPort }} }]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-mcp
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { fixai.io/tier: mcp }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { fixai.io/tier: agents } }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ $np.monitoringNamespace }} }
+  egress:
+    - to:
+        - podSelector: { matchLabels: { fixai.io/tier: platform } }
+        - podSelector: { matchLabels: { fixai.io/tier: simulator } }
+      ports: [{ port: 8080 }]
+    - ports: [{ port: 443 }]   # OIDC issuer
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fixai-agents
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: { fixai.io/tier: agents }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { fixai.io/tier: ui } }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: {{ $np.monitoringNamespace }} }
+      ports: [{ port: 8100 }]
+  egress:
+    - to:
+        - podSelector: { matchLabels: { fixai.io/tier: mcp } }
+      ports: [{ port: 8201 }, { port: 8202 }, { port: 8203 }, { port: 8204 }]
+    - ports: [{ port: 443 }]   # OIDC issuer and, with llm.provider=anthropic, the model API
+{{- end }}

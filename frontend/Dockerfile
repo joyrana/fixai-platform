@@ -8,7 +8,7 @@ RUN --mount=type=secret,id=corp_ca,required=false \
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine
+FROM nginxinc/nginx-unprivileged:1.27-alpine
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /src/dist /usr/share/nginx/html
 ENV BROKER_URL=http://broker-service:8080 CERTIFICATION_URL=http://certification-service:8080 \

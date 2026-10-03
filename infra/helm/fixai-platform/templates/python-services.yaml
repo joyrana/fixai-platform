@@ -1,0 +1,107 @@
+{{- $root := . }}
+{{- range $name, $svc := .Values.pythonServices }}
+{{- $orchestrator := eq $name "agent-orchestrator" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+    fixai.io/tier: {{ if $orchestrator }}agents{{ else }}mcp{{ end }}
+spec:
+  replicas: {{ $svc.replicas }}
+  {{- if $orchestrator }}
+  strategy: { type: Recreate }   # single writer of the SQLite checkpoint store
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fixai.labels" $root | nindent 8 }}
+        {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 8 }}
+        fixai.io/tier: {{ if $orchestrator }}agents{{ else }}mcp{{ end }}
+    spec:
+      {{- include "fixai.podSecurity" (dict "root" $root "fsGroup" (ternary 999 0 $orchestrator)) | nindent 6 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "fixai.image" (dict "root" $root "image" $root.Values.pythonImage) }}
+          imagePullPolicy: {{ $root.Values.global.imagePullPolicy }}
+          command: [{{ $svc.command | quote }}]
+          {{- include "fixai.containerSecurity" $root | nindent 10 }}
+          ports:
+            - { name: http, containerPort: {{ $svc.port }} }
+          env:
+            - { name: MCP_PORT, value: {{ $svc.port | quote }} }
+            - { name: PORT, value: {{ $svc.port | quote }} }
+            {{- include "fixai.securityEnv" $root | nindent 12 }}
+            {{- if $root.Values.security.enabled }}
+            - name: FIXAI_SERVICE_TOKEN
+              valueFrom: { secretKeyRef: { name: {{ $root.Values.security.pythonServiceTokenSecret }}, key: token } }
+            {{- end }}
+            {{- include "fixai.serviceUrls" $root | nindent 12 }}
+            - { name: CERTIFICATION_MCP_URL, value: "http://certification-mcp:8201/mcp" }
+            - { name: FIX_MCP_URL, value: "http://fix-mcp:8202/mcp" }
+            - { name: KNOWLEDGE_MCP_URL, value: "http://knowledge-mcp:8203/mcp" }
+            - { name: OPERATIONS_MCP_URL, value: "http://operations-mcp:8204/mcp" }
+            - { name: FIXAI_LLM_PROVIDER, value: {{ $root.Values.llm.provider | quote }} }
+            - { name: FIXAI_LLM_MODEL, value: {{ $root.Values.llm.model | quote }} }
+            - { name: FIXAI_LLM_EFFORT, value: {{ $root.Values.llm.effort | quote }} }
+            {{- if and (eq $root.Values.llm.provider "anthropic") $orchestrator }}
+            - name: ANTHROPIC_API_KEY
+              valueFrom: { secretKeyRef: { name: {{ required "llm.existingSecret is required for provider=anthropic" $root.Values.llm.existingSecret }}, key: api-key } }
+            {{- end }}
+            {{- if $orchestrator }}
+            - { name: FIXAI_CHECKPOINT_PATH, value: /data/checkpoints.sqlite }
+            {{- end }}
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+          livenessProbe:
+            httpGet: { path: /health/live, port: http }
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: { path: /health/ready, port: http }
+            periodSeconds: 10
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+            {{- if $orchestrator }}
+            - { name: data, mountPath: /data }
+            {{- end }}
+      volumes:
+        - { name: tmp, emptyDir: {} }
+        {{- if $orchestrator }}
+        - name: data
+          persistentVolumeClaim: { claimName: agent-orchestrator-data }
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+spec:
+  selector:
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+  ports:
+    - { name: http, port: {{ $svc.port }}, targetPort: http }
+{{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agent-orchestrator-data
+  labels:
+    {{- include "fixai.labels" . | nindent 4 }}
+spec:
+  accessModes: [ReadWriteOnce]
+  {{- with .Values.orchestratorPersistence.storageClass }}
+  storageClassName: {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.orchestratorPersistence.size }}

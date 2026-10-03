@@ -1,0 +1,38 @@
+groups:
+  - name: fixai
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 2m
+        labels: { severity: page }
+        annotations:
+          summary: "{{ $labels.job }} target {{ $labels.instance }} is down"
+      - alert: CertificationRunsErroring
+        expr: sum(increase(fixai_certification_run_duration_seconds_count{verdict="INCONCLUSIVE"}[15m])) > 3
+        for: 5m
+        labels: { severity: ticket }
+        annotations:
+          summary: "Several certification runs ended INCONCLUSIVE in the last 15 minutes (engine or connectivity errors)"
+      - alert: SimulatorRunSlow
+        expr: histogram_quantile(0.95, sum by (le) (rate(fixai_certification_run_duration_seconds_bucket{target="SIMULATOR"}[30m]))) > 300
+        for: 15m
+        labels: { severity: ticket }
+        annotations:
+          summary: "p95 simulator certification run time is above 5 minutes"
+      - alert: AgentLlmFallbackHigh
+        expr: sum(rate(fixai_agent_llm_fallbacks_total[30m])) / clamp_min(sum(rate(fixai_agent_invocations_total[30m])), 1e-9) > 0.2
+        for: 30m
+        labels: { severity: ticket }
+        annotations:
+          summary: "More than 20% of agent invocations fell back to deterministic output (provider outage or validation rejections)"
+      - alert: McpToolDenialsSpike
+        expr: sum(increase(fixai_mcp_tool_calls_total{outcome="denied"}[10m])) > 20
+        for: 5m
+        labels: { severity: page }
+        annotations:
+          summary: "Spike in denied MCP tool calls: possible misconfigured agent or abuse"
+      - alert: PromptInjectionDetected
+        expr: sum(increase(fixai_agent_injection_findings_total[1h])) > 0
+        labels: { severity: ticket }
+        annotations:
+          summary: "Instruction-like text found in counterparty data or documents; review the affected runs"

@@ -29,6 +29,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field
 
+from fixai_common import telemetry
 from fixai_orchestrator.agents import AgentRunner, ToolRunner
 
 FINISHED = ("COMPLETED", "CANCELLED", "ERROR")
@@ -197,6 +198,7 @@ def build_graph(agents: AgentRunner, tools: ToolRunner,
         return {"outcome": "CANCELLED", "events": ["workflow cancelled"]}
 
     async def finish(state: WorkflowState) -> dict[str, Any]:
+        telemetry.WORKFLOW_OUTCOMES.labels(state.get("outcome") or "UNKNOWN").inc()
         return {"events": [f"workflow finished: {state.get('outcome')}"]}
 
     def guard(next_step: Callable[[WorkflowState], str]) -> Callable[[WorkflowState], str]:

@@ -118,10 +118,26 @@ async def invoke(spec: AgentSpec[In, Out], payload: In, servers: dict[str, MCPSe
                           max_calls=spec.max_tool_calls)
     provider = llm or provider_from_env(spec.synthesizers)
     context = AgentContext(spec=spec, tools=gateway, llm=provider, deadline=time.monotonic() + spec.timeout_seconds)
-    with telemetry.span("fixai.agent.invoke", **{"fixai.agent": spec.name, "fixai.agent.version": spec.version,
-                                                "fixai.prompt.version": spec.prompt_version}):
-        with anyio.fail_after(spec.timeout_seconds):
-            output = await spec.run(payload, context)
+    outcome = "error"
+    try:
+        with telemetry.span("fixai.agent.invoke", **{"fixai.agent": spec.name, "fixai.agent.version": spec.version,
+                                                    "fixai.prompt.version": spec.prompt_version}):
+            with anyio.fail_after(spec.timeout_seconds):
+                output = await spec.run(payload, context)
+        outcome = "ok"
+    except TimeoutError:
+        outcome = "timeout"
+        raise
+    finally:
+        telemetry.AGENT_INVOCATIONS.labels(spec.name, outcome).inc()
+        telemetry.AGENT_LATENCY.labels(spec.name).observe(time.perf_counter() - started)
+    telemetry.AGENT_TOKENS.labels(spec.name, "input").inc(context.usage["input"])
+    telemetry.AGENT_TOKENS.labels(spec.name, "output").inc(context.usage["output"])
+    telemetry.AGENT_COST.labels(spec.name).inc(context.usage["cost"])
+    if context.llm_fallback_used:
+        telemetry.AGENT_LLM_FALLBACKS.labels(spec.name).inc()
+    if gateway.injection_findings:
+        telemetry.AGENT_INJECTION_FINDINGS.labels(spec.name).inc(len(gateway.injection_findings))
     if gateway.injection_findings:
         context.note(f"untrusted tool output contained instruction-like text ({len(gateway.injection_findings)} "
                      "findings); treated as data")

@@ -93,6 +93,20 @@ jobs:
       - run: npm test
       - run: npm run build
 
+  helm:
+    name: Helm chart (lint, render)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.18.4
+      - run: helm lint infra/helm/fixai-platform --set security.oidc.issuerUri=https://idp.example.com/realms/fixai
+      - run: helm template fixai infra/helm/fixai-platform --set security.oidc.issuerUri=https://idp.example.com/realms/fixai --set ingress.enabled=true > /dev/null
+      - name: Security enabled without an issuer must fail to render
+        run: "! helm template fixai infra/helm/fixai-platform > /dev/null 2>&1"
+
   e2e:
     name: End-to-end (compose stack, API journeys, browser smoke)
     needs: [java, python, frontend]

@@ -22,6 +22,7 @@ from typing import Any, ParamSpec, TypeVar
 import anyio
 from mcp.server.mcpserver.exceptions import ToolError
 
+from fixai_common import telemetry
 from fixai_common.identity import Principal, current_principal, principal_from_dev_headers, security_enabled
 
 AUDIT = logging.getLogger("fixai.mcp.audit")
@@ -85,6 +86,8 @@ class ToolRegistry:
 
     def record(self, record: AuditRecord) -> None:
         self.audit_trail.append(record)
+        telemetry.MCP_TOOL_CALLS.labels(self.server, record.tool, record.outcome).inc()
+        telemetry.MCP_TOOL_LATENCY.labels(self.server, record.tool).observe(record.duration_ms / 1000)
         AUDIT.info("mcp_tool_call server=%s tool=%s capability=%s subject=%s agent=%s outcome=%s duration_ms=%d args_sha256=%s",
                    self.server, record.tool, record.capability, record.subject, record.agent, record.outcome,
                    record.duration_ms, record.arguments_sha256)

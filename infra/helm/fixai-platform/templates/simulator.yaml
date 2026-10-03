@@ -1,0 +1,61 @@
+{{- if .Values.simulator.enabled }}
+{{- $name := "fix-simulator" }}
+{{- $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+    fixai.io/tier: simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fixai.labels" $root | nindent 8 }}
+        {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 8 }}
+        fixai.io/tier: simulator
+    spec:
+      {{- include "fixai.podSecurity" (dict "root" $root) | nindent 6 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "fixai.image" (dict "root" $root "image" .Values.simulatorService.image) }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          {{- include "fixai.containerSecurity" $root | nindent 10 }}
+          ports:
+            - { name: http, containerPort: 8080 }
+            - { name: fix, containerPort: {{ .Values.simulator.fixPort }} }
+          env:
+            - { name: SERVER_PORT, value: "8080" }
+            - { name: FIX_SIMULATOR_PORT, value: {{ .Values.simulator.fixPort | quote }} }
+          resources:
+            {{- toYaml .Values.simulatorService.resources | nindent 12 }}
+          startupProbe:
+            httpGet: { path: /actuator/health/liveness, port: http }
+            periodSeconds: 5
+            failureThreshold: 36
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: http }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: tmp, emptyDir: {} }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+spec:
+  selector:
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+  ports:
+    - { name: http, port: 8080, targetPort: http }
+    - { name: fix, port: {{ .Values.simulator.fixPort }}, targetPort: fix }
+{{- end }}

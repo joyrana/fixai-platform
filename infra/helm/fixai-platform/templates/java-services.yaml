@@ -1,0 +1,99 @@
+{{- $root := . }}
+{{- range $name, $svc := .Values.javaServices }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+    fixai.io/tier: platform
+spec:
+  replicas: {{ $svc.replicas }}
+  selector:
+    matchLabels:
+      {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fixai.labels" $root | nindent 8 }}
+        {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 8 }}
+        fixai.io/tier: platform
+    spec:
+      {{- include "fixai.podSecurity" (dict "root" $root) | nindent 6 }}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ $name }}
+          image: {{ include "fixai.image" (dict "root" $root "image" $svc.image) }}
+          imagePullPolicy: {{ $root.Values.global.imagePullPolicy }}
+          {{- include "fixai.containerSecurity" $root | nindent 10 }}
+          ports:
+            - { name: http, containerPort: 8080 }
+          env:
+            - { name: SERVER_PORT, value: "8080" }
+            - { name: POSTGRES_HOST, value: {{ $root.Values.database.host | quote }} }
+            - { name: POSTGRES_PORT, value: {{ $root.Values.database.port | quote }} }
+            - { name: POSTGRES_DB, value: {{ $root.Values.database.name | quote }} }
+            - { name: DB_POOL_SIZE, value: {{ $root.Values.database.poolSize | quote }} }
+            - name: POSTGRES_USER
+              valueFrom: { secretKeyRef: { name: {{ $root.Values.database.existingSecret }}, key: username } }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: {{ $root.Values.database.existingSecret }}, key: password } }
+            - { name: FIXAI_CORS_ORIGINS, value: {{ include "fixai.corsOrigins" $root | quote }} }
+            {{- include "fixai.securityEnv" $root | nindent 12 }}
+            {{- if $root.Values.security.enabled }}
+            - { name: FIXAI_OIDC_TOKEN_URI, value: {{ $root.Values.security.oidc.tokenUri | quote }} }
+            - { name: FIXAI_CLIENT_ID, value: {{ $name | quote }} }
+            - name: FIXAI_CLIENT_SECRET
+              valueFrom: { secretKeyRef: { name: {{ $root.Values.security.clientSecretsSecret }}, key: {{ $name }} } }
+            {{- end }}
+            {{- include "fixai.serviceUrls" $root | nindent 12 }}
+            {{- range $key, $value := $svc.env }}
+            - { name: {{ $key }}, value: {{ $value | quote }} }
+            {{- end }}
+            {{- if eq $name "certification-service" }}
+            - { name: FIX_SIMULATOR_PORT, value: {{ $root.Values.simulator.fixPort | quote }} }
+            {{- end }}
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+          startupProbe:
+            httpGet: { path: /actuator/health/liveness, port: http }
+            periodSeconds: 5
+            failureThreshold: 36
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: http }
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: http }
+            periodSeconds: 10
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: tmp, emptyDir: {} }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+spec:
+  selector:
+    {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 4 }}
+  ports:
+    - { name: http, port: 8080, targetPort: http }
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "fixai.labels" $root | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{- include "fixai.selector" (dict "root" $root "name" $name) | nindent 6 }}
+{{- end }}

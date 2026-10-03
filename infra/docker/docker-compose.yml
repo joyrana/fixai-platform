@@ -191,6 +191,32 @@ services:
     ports:
       - "127.0.0.1:${UI_PORT:-3000}:8080"
 
+  # Observability: docker compose ... --profile platform --profile observability up -d
+  prometheus:
+    profiles: [observability]
+    image: prom/prometheus:v3.4.0
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=7d"]
+    volumes:
+      - ../observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../observability/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  grafana:
+    profiles: [observability]
+    image: grafana/grafana:12.0.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-me-local-only}
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/fixai-overview.json
+    volumes:
+      - ../observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus]
+    ports:
+      - "127.0.0.1:3001:3000"
+
 volumes:
   postgres-data:
   orchestrator-data:

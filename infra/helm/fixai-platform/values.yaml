@@ -1,0 +1,101 @@
+# Production-leaning defaults: OIDC security on, external PostgreSQL, network policies on, hardened pods.
+# Secrets are referenced by name only; create them with your secret manager (External Secrets, Vault, sealed-secrets).
+
+global:
+  imageRegistry: ""          # e.g. registry.example.com/fixai
+  imageTag: "0.1.0"
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+security:
+  enabled: true
+  oidc:
+    issuerUri: ""            # required when security.enabled
+    audience: fixai-platform
+    tokenUri: ""             # client-credentials endpoint for service-to-service calls
+  # Secret with one key per service holding its OIDC client secret (keys: the service names below).
+  clientSecretsSecret: fixai-oidc-clients
+  # Secret with the service token used by Python components (key: token) - short-lived tokens via a sidecar are preferred.
+  pythonServiceTokenSecret: fixai-python-service-token
+  corsOrigins: ""            # defaults to https://<ingress.host>
+
+database:
+  host: postgres.database.svc
+  port: 5432
+  name: fixai
+  existingSecret: fixai-db   # keys: username, password
+  poolSize: 10
+
+llm:
+  provider: offline          # offline | anthropic
+  model: claude-opus-5-5
+  effort: medium
+  existingSecret: ""         # key: api-key (only for provider=anthropic)
+
+telemetry:
+  otlpEndpoint: ""           # e.g. http://otel-collector.observability:4318
+  serviceMonitor: false      # create Prometheus Operator ServiceMonitors
+
+# The synthetic counterparty. Keep enabled: AI agents may only certify against it.
+simulator:
+  enabled: true
+  fixPort: 9880
+
+javaServices:
+  certification-service:
+    image: certification-service
+    replicas: 2
+    resources: { requests: { cpu: 500m, memory: 768Mi }, limits: { memory: 1536Mi } }
+    env:
+      FIX_SIMULATOR_HOST: fix-simulator
+      FIX_SIMULATOR_EMBEDDED: "false"
+  broker-service:
+    image: broker-service
+    replicas: 2
+    resources: { requests: { cpu: 250m, memory: 512Mi }, limits: { memory: 1Gi } }
+    env: {}
+  workflow-service:
+    image: workflow-service
+    replicas: 2
+    resources: { requests: { cpu: 250m, memory: 512Mi }, limits: { memory: 1Gi } }
+    env: {}
+
+simulatorService:
+  image: fix-simulator
+  resources: { requests: { cpu: 250m, memory: 384Mi }, limits: { memory: 768Mi } }
+
+pythonServices:
+  certification-mcp: { command: fixai-certification-mcp, port: 8201, replicas: 2, resources: { requests: { cpu: 100m, memory: 192Mi }, limits: { memory: 512Mi } } }
+  fix-mcp:           { command: fixai-fix-mcp,           port: 8202, replicas: 2, resources: { requests: { cpu: 100m, memory: 192Mi }, limits: { memory: 512Mi } } }
+  knowledge-mcp:     { command: fixai-knowledge-mcp,     port: 8203, replicas: 2, resources: { requests: { cpu: 100m, memory: 256Mi }, limits: { memory: 768Mi } } }
+  operations-mcp:    { command: fixai-operations-mcp,    port: 8204, replicas: 2, resources: { requests: { cpu: 100m, memory: 192Mi }, limits: { memory: 512Mi } } }
+  # One replica: workflow checkpoints are in SQLite on a volume (see ADR-0008 for multi-replica requirements).
+  agent-orchestrator: { command: fixai-agent-orchestrator, port: 8100, replicas: 1, resources: { requests: { cpu: 250m, memory: 384Mi }, limits: { memory: 1Gi } } }
+
+pythonImage: python
+orchestratorPersistence:
+  size: 2Gi
+  storageClass: ""
+
+frontend:
+  image: frontend
+  replicas: 2
+  resources: { requests: { cpu: 50m, memory: 64Mi }, limits: { memory: 128Mi } }
+
+ingress:
+  enabled: false
+  className: ""
+  host: fixai.example.com
+  tlsSecret: ""
+  annotations: {}
+
+networkPolicy:
+  enabled: true
+  # Namespaces allowed to scrape metrics (label selector values for kubernetes.io/metadata.name).
+  monitoringNamespace: monitoring
+  # Ingress controller namespace allowed to reach the UI.
+  ingressNamespace: ingress-nginx
+  # CIDRs the certification engine may connect to for broker TEST/UAT sessions (empty: simulator only).
+  brokerEgressCidrs: []
+  # CIDR of the OIDC issuer / database if outside the cluster.
+  extraEgressCidrs: []

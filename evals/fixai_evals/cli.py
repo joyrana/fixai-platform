@@ -89,6 +89,8 @@ def main(argv: list[str] | None = None) -> int:
     bench.add_argument("--certification-url", default="http://localhost:8083")
     bench.add_argument("--concurrency", type=int, default=4)
     bench.add_argument("--runs", type=int, default=8)
+    bench.add_argument("--run-suite", default="smoke", help="certification suite each run executes")
+    bench.add_argument("--profile", default="COMPLIANT", help="simulator profile")
     bench.add_argument("--out", type=Path, default=REPORTS)
     cmp = sub.add_parser("compare")
     cmp.add_argument("--baseline", type=Path, required=True)
@@ -107,9 +109,14 @@ def main(argv: list[str] | None = None) -> int:
                 failed = True
         return 1 if failed else 0
     if args.command == "benchmark":
+        import logging
+
         from fixai_evals import benchmark
 
-        record = asyncio.run(benchmark.run(args.suite, args.certification_url, args.concurrency, args.runs))
+        logging.getLogger("httpx").setLevel(logging.WARNING)
+
+        record = asyncio.run(benchmark.run(args.suite, args.certification_url, args.concurrency, args.runs,
+                                           run_suite=args.run_suite, profile=args.profile))
         path = write(record, f"benchmark-{args.suite}", args.out)
         print(json.dumps(record["metrics"], indent=1), "->", path)
         return 0

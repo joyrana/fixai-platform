@@ -1,0 +1,8 @@
+FIXAI platform {{ .Chart.AppVersion }} installed in namespace {{ .Release.Namespace }}.
+
+Security: {{ if .Values.security.enabled }}OIDC ({{ .Values.security.oidc.issuerUri }}){{ else }}DISABLED - development identity headers are accepted. Never expose this release.{{ end }}
+LLM provider: {{ .Values.llm.provider }}
+UI: {{ if .Values.ingress.enabled }}https://{{ .Values.ingress.host }}{{ else }}kubectl -n {{ .Release.Namespace }} port-forward svc/frontend 8080:8080{{ end }}
+
+AI agents can only start runs against the synthetic simulator. Certification against a broker TEST/UAT endpoint needs an
+approved session configuration, a human-approved run request and egress listed in networkPolicy.brokerEgressCidrs.

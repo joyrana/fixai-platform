@@ -9,7 +9,7 @@ from typing import Any
 import uvicorn
 from mcp.server.mcpserver import MCPServer
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 
 from fixai_common import telemetry
 from fixai_common.mcp.policy import ToolRegistry
@@ -22,6 +22,11 @@ def build_server(name: str, version: str, instructions: str) -> tuple[MCPServer,
     @server.custom_route("/health/live", methods=["GET"])
     async def live(_: Request) -> JSONResponse:
         return JSONResponse({"status": "UP"})
+
+    @server.custom_route("/metrics", methods=["GET"])
+    async def metrics(_: Request) -> Response:
+        body, content_type = telemetry.metrics_response()
+        return Response(body, media_type=content_type)
 
     @server.custom_route("/health/ready", methods=["GET"])
     async def ready(_: Request) -> JSONResponse:

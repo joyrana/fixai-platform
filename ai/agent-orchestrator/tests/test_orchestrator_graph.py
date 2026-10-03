@@ -135,3 +135,15 @@ async def test_assist_endpoints_check_roles_and_never_allow_incident_drafts():
                                       headers=manager)).status_code == 200
             assert (await client.post("/v1/assist/diagnose", json={"run_id": "x"}, headers=engineer)).status_code == 422
             assert (await client.get("/v1/workflows", headers=engineer)).json() == []
+
+
+async def test_metrics_are_public_and_carry_workflow_outcomes():
+    platform = Platform()
+    service = WorkflowService(platform.agents, platform.tools, InMemorySaver(), nosleep)
+    await service.start(request(), "alice", wait=True)
+    app = create_orchestrator_app(service=service)
+    async with app.router.lifespan_context(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            body = (await client.get("/metrics")).text
+    assert 'fixai_workflow_outcomes_total{outcome="REPORTED"}' in body
